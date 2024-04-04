@@ -75,6 +75,8 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
         const userDataString = localStorage.getItem('userData');
         if (userDataString) {
             this.userData = JSON.parse(userDataString) as UserData;
+            console.log("userData",userDataString);
+            
         }
 
 

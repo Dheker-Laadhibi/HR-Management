@@ -42,8 +42,8 @@
 
         <!-- companies  list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden">
-            <ng-container  >
-                <ng-container  *ngFor="let company of  companies" >
+            <ng-container *ngIf=" companies.length > 0" >
+                <ng-container >
                     <div class="grid">
                         <!-- Header -->
                         <div
@@ -51,16 +51,16 @@
                             matSort
                             matSortDisableClear>
 
-                            <div [mat-sort-header]="'name'">{{company.name}}</div>
+                            <div [mat-sort-header]="'name'">Name</div>
                             <div
                                 class="hidden sm:block"
                                 [mat-sort-header]="'price'">
-                                {{company.website}}
+                                Website
                             </div>
                             <div
                                 class="hidden lg:block"
                                 [mat-sort-header]="'stock'">
-                                {{company.email}}
+                                Email
                             </div>
                             <div
                                 class="hidden lg:block"
@@ -70,7 +70,7 @@
                             <div class="hidden sm:block">Details</div>
                         </div>
                         <!-- Rows -->
-                        <ng-container>
+                        <ng-container *ngFor="let company of companies">
                             <ng-container>
                                 <a class="inventory-row" >
 
@@ -78,7 +78,7 @@
 
                                         <!-- Name -->
                                     <div class="flex">
-                                        Example
+                                        {{ company.name }}
                                     </div>
 
                                     <!-- Price -->
@@ -88,12 +88,12 @@
 
                                     <!-- Stock -->
                                     <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4">Exemple@gmail.com</div>
+                                        <div class="min-w-4">{{company.email}}</div>
                                     </div>
 
                                     <!-- Stock -->
                                     <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4">71 111 333</div>
+                                        <div class="min-w-4">{{company.createdAt}}</div>
                                     </div>
 
                                     <!-- Details button -->

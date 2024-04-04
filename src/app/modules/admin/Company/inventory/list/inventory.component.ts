@@ -1,3 +1,5 @@
+import { ApiResponse } from './../../../../../Model/apiresponse';
+import { items } from './../../../../../mock-api/apps/file-manager/data';
 
 import { CompanieServiceService } from './../../../../../Services/companie-service.service';
 import { AsyncPipe, CurrencyPipe, NgClass, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
@@ -23,7 +25,8 @@ import { debounceTime, map, merge, Observable, Subject, switchMap, takeUntil } f
 import { NotesLabelsComponent } from 'app/modules/admin/Company/inventory/labels/labels.component';
 import { UpdateComponent } from 'app/modules/admin/Company/inventory/update/update.component';
 import { AddComponent } from 'app/modules/admin/Company/inventory/add/add.component';
-import { Companies } from 'app/Model/companies';
+import { Companies  } from 'app/Model/companies';
+import { CompaniesPagination } from 'app/Model/CompaniesPagination';
 
 
 @Component({
@@ -58,34 +61,72 @@ import { Companies } from 'app/Model/companies';
 export class InventoryListComponent
 
 {
-    limit: number;
-    page: number;
+
+   
 
 
-    companies: Companies[] = [];
+    
    
 constructor( private CompanieServ:CompanieServiceService){
-
+  
 }
+companies: any[]= [];
+ApiResponse:ApiResponse;
+public CompaniesPagination:CompaniesPagination;
 
+currentPage: number = 1;
+itemsPerPage: number = 10;
 
 ngOnInit(): void {
     // Initialisez les valeurs par défaut de la pagination
     
-    this.loadCompanies(); // Chargez les entreprises avec les valeurs par défaut
+    this.getCompanies(); // Chargez les entreprises avec les valeurs par défaut
   }
-  loadCompanies(): void {
-    // Utilisez les valeurs de page et de limite spécifiées par l'utilisateur
-    this.CompanieServ.getCompanies()
-    .subscribe(
-      (data: Companies) => { // Utilisez la signature (data: Companies) => void
-        this.companies = [data]; // Mettez l'objet Companies dans un tableau
-        console.log('Companies:', this.companies);
-      },
-      (error: any) => {
-        console.error('Error:', error);
-      }
-    );
 
-}
+   getCompanies(): void {
+    this.CompanieServ.getCompanies()
+      .subscribe((response) => {
+
+
+this.ApiResponse=response;
+        //this.companies =  response;
+        //console.log(this.companies);
+        console.log(response);
+        this.companies= response.data.items;
+        console.log("items",this.ApiResponse.data[0]);
+        
+        
+        console.log('Data received:', response.data.items);
+
+
+       console.log( response[1]);
+       
+      
+      //  console.log(response.da);
+        
+       
+        
+//console.log("tableau companies",this.CompaniesPagination);
+console.log("companies",this.companies);
+
+//
+
+
+      }, (error) => {
+        console.error('Error fetching allcompanies:', error);
+      });
+  }
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 }

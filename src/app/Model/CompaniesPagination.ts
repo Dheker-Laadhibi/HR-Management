@@ -1,7 +1,7 @@
 import { Companies } from "./companies";
 
 export interface CompaniesPagination {
-    //items: Companies[];
+    items: Companies [];
     page: number;
     limit: number;
     totalCount: number;
