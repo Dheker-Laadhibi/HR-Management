@@ -1,0 +1,235 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="flex flex-col shadow bg-card">
+
+        <!-- Cover image -->
+        <div>
+            <img
+                class="h-40 lg:h-80 object-cover"
+                src="assets/images/pages/profile/cover.jpg"
+                alt="Cover image">
+        </div>
+
+        <!-- User info -->
+        <div class="flex flex-col flex-0 lg:flex-row items-center max-w-5xl w-full mx-auto px-8 lg:h-18 bg-card">
+
+            <!-- Avatar -->
+            <div class="-mt-26 lg:-mt-22 rounded-full">
+                <img
+                    class="w-32 h-32 rounded-full ring-4 ring-bg-card"
+                    src="assets/images/avatars/NoProfilePicture1.jpg"
+                    alt="User avatar">
+            </div>
+
+            <!-- Details -->
+            <div class="flex flex-col items-center lg:items-start mt-4 lg:mt-0 lg:ml-8">
+                <div class="text-lg font-bold leading-none">Nour el houda SAMMARI</div>
+                <div class="text-secondary">Tunisia</div>
+            </div>
+
+            <!-- Separator -->
+            <div class="hidden lg:flex h-8 mx-8 border-l-2"></div>
+
+
+
+            <!-- Menu -->
+            <div class="flex items-center mt-8 mb-4 lg:m-0 lg:ml-auto space-x-6">
+                <a
+                    class="font-medium"
+                    [routerLink]="['./']">
+                    Home
+                </a>
+                <a
+                    class="text-secondary"
+                    [routerLink]="['./']">
+                    About
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto justify-center w-full max-w-5xl mx-auto p-6 sm:p-8">
+
+        <!-- Column -->
+        <div class="hidden lg:flex flex-col items-start mr-8">
+
+            <!-- About me -->
+            <fuse-card class="flex flex-col max-w-80 w-full p-8">
+                <div class="text-2xl font-semibold leading-tight">About Me</div>
+
+                <div class="flex flex-col mt-4">
+                    <div class="flex items-center">
+                        <mat-icon
+                            class="icon-size-5 mr-3"
+                            [svgIcon]="'heroicons_solid:map-pin'"></mat-icon>
+                        <span class="leading-none">Tunisia</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <mat-icon
+                            class="icon-size-5 mr-3"
+                            [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
+                        <span class="leading-none">ACME Corp. Lead UX Designer</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <mat-icon
+                            class="icon-size-5 mr-3"
+                            [svgIcon]="'heroicons_solid:cake'"></mat-icon>
+                        <span class="leading-none">April, 24</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <mat-icon
+                            class="icon-size-5 mr-3"
+                            svgIcon="email"></mat-icon>
+                            <span class="leading-none">noursam323@gmail.com</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <mat-icon
+                            class="icon-size-5 mr-3"
+                            svgIcon="heroicons_outline:user-circle"></mat-icon>
+                        <span class="leading-none">Female</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <mat-icon
+                            class="icon-size-5 mr-3"
+                            svgIcon="heroicons_outline:phone"></mat-icon>
+                        <span class="leading-none">+216 21 255 555</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <mat-icon
+                            class="icon-size-5 mr-3"
+                            svgIcon="heroicons_outline:shield-check"></mat-icon>
+                        <span class="leading-none">Hired on 02/02/2024</span>
+                    </div>
+                </div>
+                <a   (click)="openEditInfosDialog()"
+                    class="px-6 mt-8"
+                    mat-flat-button
+                    [color]="'primary'"
+                    [routerLink]="['./']">
+                    Update your informations
+                </a>
+            </fuse-card>
+
+            <!-- About me -->
+            <fuse-card class="flex flex-col max-w-80 w-full mt-8 px-8 pt-6 pb-4">
+
+                <div class="text-2xl font-semibold leading-tight">Experiences</div>
+                <div class="flex flex-col mt-4 sm:overflow-y-auto">
+                    <div class="flex items-center mt-4">
+                        <mat-icon
+                            class="icon-size-5 mr-3"
+                            [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
+                        <span class="leading-none">Example</span>
+                    </div>
+                </div>
+                <a   (click)="openEditExperienceDialog()"
+                    class="px-6 mt-8"
+                    mat-flat-button
+                    [color]="'primary'"
+                    [routerLink]="['./']">
+                    Add Experience
+                </a>
+            </fuse-card>
+
+        </div>
+
+        <!-- Column -->
+        <div class="flex flex-col items-start">
+
+            <!-- Create Post -->
+            <fuse-card class="flex flex-col  max-w-140  max-h-180 p-6 sm:p-8 pb-6">
+                <!--<div class="flex items-center justify-between">
+                    <div class="text-2xl font-semibold leading-tight">Missions</div>
+                    <div class="-mr-3">
+                        <button
+                            mat-icon-button
+                            [matMenuTriggerFor]="listCard04Menu">
+                            <mat-icon
+                                class="icon-size-5"
+                                [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
+                        </button>
+                        <mat-menu #listCard04Menu="matMenu">
+                            <button mat-menu-item>Clear activities</button>
+                        </mat-menu>
+                    </div>
+                </div>-->
+                <div class="text-2xl  font-semibold leading-tight">Missions</div>
+
+                <div class="flex flex-col  mt-5 sm:overflow-y-auto">
+                    <div class="flex">
+                        <div class="flex flex-col min-w-0 ">
+                            <div class="leading-tight">Amelia Edwards commented on John Silverton's photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">4 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="flex mt-8">
+                        <div class="flex flex-col min-w-0">
+                            <div class="leading-tight">Lew Silverton changed his profile photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">25 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="flex mt-8">
+                        <div class="flex flex-col min-w-0">
+                            <div class="leading-tight">Lew Silverton changed his profile photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">25 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="flex mt-8">
+                        <div class="flex flex-col min-w-0">
+                            <div class="leading-tight">Lew Silverton changed his profile photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">25 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="flex mt-8">
+                        <div class="flex flex-col min-w-0">
+                            <div class="leading-tight">Lew Silverton changed his profile photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">25 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="flex mt-8">
+                        <div class="flex flex-col min-w-0">
+                            <div class="leading-tight">Brian Hughes liked your photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">3 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="flex mt-8">
+                        <div class="flex flex-col min-w-0">
+                            <div class="leading-tight">Marleah Eagleston commented on John Silverton's photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">Yesterday</div>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="flex flex-col min-w-0">
+                            <div class="leading-tight">Amelia Edwards commented on John Silverton's photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">4 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="flex mt-8">
+                        <div class="flex flex-col min-w-0">
+                            <div class="leading-tight">Lew Silverton changed his profile photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">25 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="flex mt-8">
+                        <div class="flex flex-col min-w-0">
+                            <div class="leading-tight">Brian Hughes liked your photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">3 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="flex mt-8">
+                        <div class="flex flex-col min-w-0">
+                            <div class="leading-tight">Marleah Eagleston commented on John Silverton's photo</div>
+                            <div class="text-md leading-none text-secondary mt-2">Yesterday</div>
+                        </div>
+                    </div>
+                </div>
+            </fuse-card>
+</div>
+
+
+
+

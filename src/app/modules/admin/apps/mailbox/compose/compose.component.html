@@ -1,0 +1,116 @@
+<form [formGroup]="composeForm" class="flex flex-col max-w-240 md:min-w-160 max-h-screen -m-6">
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+      <div class="text-lg font-medium">New Request</div>
+      <button mat-icon-button (click)="saveAndClose()" [tabIndex]="-1">
+        <mat-icon class="text-current">close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Compose form -->
+    <div class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto">
+      <!-- Type -->
+      <div class="mb-4 flex">
+        <span class="font-semibold mr-2">Type:</span>
+        <mat-checkbox formControlName="type1">Advance salary</mat-checkbox>
+        <mat-checkbox formControlName="type2">Leave request</mat-checkbox>
+        <mat-checkbox formControlName="type3">Exit permission</mat-checkbox>
+        <mat-checkbox formControlName="type4">Loan request</mat-checkbox>
+      </div>
+
+      <!-- Input fields based on selected types -->
+      <div *ngIf="composeForm.get('type1').value">
+        <!-- Input 1 -->
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Amount</mat-label>
+            <input matInput formControlName="amount1">
+          </mat-form-field>
+        </div>
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Reason</mat-label>
+            <input matInput formControlName="reason1">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="composeForm.get('type2').value">
+        <!-- Input 2 -->
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Start Date</mat-label>
+            <input matInput formControlName="start2">
+          </mat-form-field>
+        </div>
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>End Date</mat-label>
+            <input matInput formControlName="end2">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="composeForm.get('type3').value">
+        <!-- Input 3 -->
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Start Date</mat-label>
+            <input matInput formControlName="start3">
+          </mat-form-field>
+        </div>
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Return Date</mat-label>
+            <input matInput formControlName="return3">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="composeForm.get('type4').value">
+        <!-- Input 4 -->
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Loan Amount</mat-label>
+            <input matInput formControlName="amount4">
+          </mat-form-field>
+        </div>
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Loan Duration</mat-label>
+            <input matInput formControlName="duration4">
+          </mat-form-field>
+        </div>
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Interest Rate</mat-label>
+            <input matInput formControlName="interestRate4">
+          </mat-form-field>
+        </div>
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Reason</mat-label>
+            <input matInput formControlName="reason4">
+          </mat-form-field>
+        </div>
+        <div class="mb-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Path Document</mat-label>
+            <input matInput formControlName="documentPath4">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6">
+        <div class="flex items-center mt-4 sm:mt-0">
+          <!-- Discard -->
+          <button mat-stroked-button class="ml-auto sm:ml-0" (click)="discard()">Discard</button>
+          <!-- Save as draft -->
+          <button mat-stroked-button class="sm:mx-3" (click)="saveAsDraft()">Save as draft</button>
+          <!-- Send -->
+          <button mat-flat-button class="order-first sm:order-last" [color]="'primary'" (click)="send()">Send</button>
+        </div>
+      </div>
+    </div>
+  </form>

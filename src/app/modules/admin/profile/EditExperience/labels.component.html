@@ -1,0 +1,46 @@
+<div class="flex flex-col flex-auto w-200 min-w-80 p-2 md:p-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div class="text-2xl font-semibold">Add Experience</div>
+        <button matDialogClose mat-icon-button>
+            <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+        </button>
+    </div>
+    <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
+    </div>
+    <form class="mt-8">
+        <mat-form-field class="w-full">
+            <mat-label>New Experience</mat-label>
+            <input id="name" matInput (input)="splitText($event.target.value)">
+        </mat-form-field>
+
+        <div class="experiences">
+            <div *ngFor="let experience of experiences" class="experience">
+                {{ experience }}
+            </div>
+        </div>
+
+        <!-- Submit button -->
+        <button class="fuse-mat-button-large w-full mt-6" mat-flat-button [color]="'primary'">
+            <span>
+                Add
+            </span>
+        </button>
+    </form>
+</div>
+
+<!-- CSS Styles -->
+<style>
+    .experiences {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .experience {
+        padding: 5px 10px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+    }
+</style>

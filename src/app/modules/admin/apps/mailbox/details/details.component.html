@@ -1,0 +1,147 @@
+<div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
+
+    <ng-container *ngIf="mail; else selectMailToRead">
+
+        <!-- Header -->
+        <div class="z-10 relative flex flex-col flex-0 w-full border-b">
+
+            <!-- Toolbar -->
+            <div class="flex items-center min-h-16 px-4 md:px-6 border-b bg-gray-50 dark:bg-transparent">
+
+                <!-- Back button -->
+                <a
+                    class="lg:hidden md:-ml-2"
+                    mat-icon-button
+                    [routerLink]="['./../']">
+                    <mat-icon [svgIcon]="'heroicons_outline:arrow-long-left'"></mat-icon>
+                </a>
+
+                <!-- Toggle labels button & menu -->
+
+                <mat-menu #toggleLabelMenu="matMenu">
+                    <ng-container *ngFor="let label of labels; trackBy: trackByFn">
+
+                    </ng-container>
+                </mat-menu>
+
+
+
+
+                <!-- Other actions button & menu -->
+                <button
+                    class="ml-full"
+                    mat-icon-button
+                    [matMenuTriggerFor]="mailMenu">
+                    <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
+                </button>
+                <mat-menu #mailMenu="matMenu">
+
+                    <!-- Delete -->
+                    <button
+                        mat-menu-item
+                        *ngIf="getCurrentFolder() !== 'trash'"
+                        (click)="moveToFolder('trash')">
+                        <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                        <span>Delete</span>
+                    </button>
+                </mat-menu>
+            </div>
+
+
+
+        </div>
+
+        <!-- Threads -->
+        <div
+            class="flex flex-col flex-auto shrink-0 lg:shrink p-3 lg:overflow-y-auto bg-gray-100 dark:bg-transparent"
+            fuseScrollReset>
+
+            <!-- Thread -->
+            <div class="flex flex-col flex-0 w-full shadow rounded-2xl overflow-hidden bg-card dark:bg-black dark:bg-opacity-10">
+
+                <div class="flex flex-col py-8 px-6">
+
+                    <!-- Header -->
+                    <div class="flex items-center w-full">
+
+                        <!-- Info -->
+                        <div class="ml-4 min-w-0">
+
+                            <!-- From -->
+                            <div class="font-semibold truncate text-2xl">{{mail.from.contact.split('<')[0].trim()}}</div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Content -->
+                    <div
+                        class="flex mt-8 whitespace-pre-line leading-relaxed"
+                        [innerHTML]="mail.content">
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="flex w-full p-6 border-t bg-gray-50 dark:bg-transparent">
+
+                    <!-- Buttons -->
+                    <ng-container *ngIf="!replyFormActive">
+                        <div class="flex flex-wrap w-full -m-2">
+                            <!-- Reply -->
+                            <button
+                                class="m-2"
+                                mat-stroked-button
+                                [color]="'primary'">
+                                <mat-icon
+                                    class="icon-size-5"
+                                    [svgIcon]="'heroicons_solid:arrow-uturn-left'"></mat-icon>
+                                <span class="ml-2">Approve</span>
+                            </button>
+                            <!-- Reply all -->
+                            <button
+                                class="m-2"
+                                mat-stroked-button
+                                [color]="'primary'">
+                                <mat-icon
+                                    class="icon-size-5"
+                                    [svgIcon]="'heroicons_solid:arrow-uturn-left'"></mat-icon>
+                                <span class="ml-2">Refuse</span>
+                            </button>
+                            <!-- Forward
+                            <button
+                                class="m-2"
+                                mat-stroked-button
+                                [color]="'primary'"
+                                (click)="forward()">
+                                <mat-icon
+                                    class="icon-size-5"
+                                    [color]="'primary'"
+                                    [svgIcon]="'heroicons_solid:chevron-double-right'"></mat-icon>
+                                <span class="ml-2">Forward</span>
+                            </button>-->
+                        </div>
+                    </ng-container>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </ng-container>
+
+    <!-- Select mail to read template -->
+    <ng-template #selectMailToRead>
+
+        <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+            <mat-icon
+                class="icon-size-24"
+                [svgIcon]="'heroicons_outline:envelope'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Select a request to read</div>
+        </div>
+
+    </ng-template>
+
+</div>

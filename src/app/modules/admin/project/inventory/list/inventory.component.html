@@ -1,0 +1,251 @@
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+
+    <!-- Header -->
+    <div class="relative flex flex-col h-10 sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Loader -->
+        <div
+            class="absolute inset-x-0 bottom-0"
+            *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Projects</div>
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field
+                class="fuse-mat-dense fuse-mat-rounded min-w-64"
+                [subscriptSizing]="'dynamic'">
+                <mat-icon
+                    class="icon-size-5"
+                    matPrefix
+                    [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+                <input
+                    matInput
+                    [formControl]="searchInputControl"
+                    [autocomplete]="'off'"
+                    [placeholder]="'Search projects'">
+            </mat-form-field>
+            <!-- Add product button -->
+            <button
+                class="ml-4"
+                mat-flat-button
+                [color]="'primary'"
+                (click)="openAddDialog()">
+                <span class="ml-2 mr-1">Add</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+
+        <!-- Products list -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden">
+            <ng-container *ngIf="(products$ | async) as products">
+                <ng-container *ngIf="products.length > 0; else noProducts">
+                    <div class="grid">
+                        <!-- Header -->
+                        <div
+                            class="inventory-grid z-10 sticky top-0 grid gap-30 py-4 h-10 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
+
+                            <div [mat-sort-header]="'name'">Name</div>
+                            <div
+                                class="hidden sm:block"
+                                [mat-sort-header]="'price'">
+                                Code
+                            </div>
+                            <div
+                                class="hidden lg:block"
+                                [mat-sort-header]="'stock'">
+                                Technologies
+                            </div>
+                            <div
+                                class="hidden lg:block"
+                                [mat-sort-header]="'active'">
+                                Specialty
+                            </div>
+                            <div class="hidden sm:block">Details</div>
+                        </div>
+                        <!-- Rows -->
+                        <ng-container *ngIf="(products$ | async) as products">
+                            <ng-container *ngFor="let product of products; trackBy: trackByFn">
+                                <a class="inventory-row" (click)="openInfosDialog(product);">
+
+                                <div class="inventory-grid grid items-center h-12 gap-30 py-3 px-6 md:px-8 border-b">
+
+                                        <!-- Name -->
+                                    <div class="flex">
+                                        Example
+                                    </div>
+
+                                    <!-- Price -->
+                                    <div class="hidden sm:block">
+                                        {{product.price}}
+                                    </div>
+
+                                    <!-- Stock -->
+                                    <div class="hidden lg:flex items-center">
+                                        <div class="min-w-4">Tech1, Tech2</div>
+                                    </div>
+
+                                    <!-- Stock -->
+                                    <div class="hidden lg:flex items-center">
+                                        <div class="min-w-4">IT</div>
+                                    </div>
+
+                                    <!-- Details button -->
+                                    <div class="inventory-grid grid items-center gap-10  h-12 gap-10 py-3 px-6 md:px-8">
+                                    <div>
+                                        <button
+                                            class="-ml-4 w-20 min-h-5 h-5 px-2 leading-6"
+                                            mat-flat-button
+                                            [color]="'primary'"
+                                            (click)="openEditLabelsDialog(); $event.stopPropagation()">
+                                            Update
+                                        </button>
+
+                                    </div>
+
+                                    <div>
+                                        <button
+                                            class="w-20 min-h-5 h-5 px-2 -ml-4 leading-6"
+                                            mat-button
+                                            [color]="'warn'"
+                                            (click)="deleteSelectedProject();$event.stopPropagation()">
+
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                </div>
+                            </a>
+                                <div class="grid">
+                                    <ng-container *ngIf="selectedProduct?.id === product.id">
+                                        <ng-container *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: product}"></ng-container>
+                                    </ng-container>
+                                </div>
+
+                            </ng-container>
+                        </ng-container>
+                    </div>
+
+                    <mat-paginator
+                        class="sm:absolute sm:inset-x-1 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                        [ngClass]="{'pointer-events-none': isLoading}"
+                        [length]="pagination.length"
+                        [pageIndex]="pagination.page"
+                        [pageSize]="pagination.size"
+                        [pageSizeOptions]="[5, 10, 25, 100]"
+                        [showFirstLastButtons]="true"></mat-paginator>
+
+                </ng-container>
+            </ng-container>
+
+            <ng-template
+                #rowDetailsTemplate
+                let-product>
+                <div class="shadow-lg overflow-hidden">
+                    <div class="flex border-b">
+                        <!-- Selected product form -->
+                        <form
+                            class="flex flex-col w-full"
+                            [formGroup]="selectedProductForm">
+
+                            <div class="flex flex-col sm:flex-row p-8">
+
+
+
+                                <div class="flex flex-auto flex-wrap">
+                                    <!-- Name, SKU & etc. -->
+                                    <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+
+                                        <!-- Name -->
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Name</mat-label>
+                                            <input
+                                                matInput
+                                                [formControlName]="'name'">
+                                        </mat-form-field>
+
+                                        <!-- SKU and Barcode -->
+                                        <div class="flex">
+                                            <mat-form-field class="w-1/3 pr-2">
+                                                <mat-label>Website</mat-label>
+                                                <input
+                                                    matInput
+                                                    [formControlName]="'sku'">
+                                            </mat-form-field>
+                                            <mat-form-field class="w-2/3 pl-2">
+                                                <mat-label>Email</mat-label>
+                                                <input
+                                                    matInput
+                                                    [formControlName]="'barcode'">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <!-- Stock and Reserved -->
+                                        <div class="flex">
+                                            <mat-form-field class="w-1/3 pr-2">
+                                                <mat-label>Phone Number</mat-label>
+                                                <input
+                                                    matInput
+                                                    [formControlName]="'stock'">
+                                            </mat-form-field>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="flex items-center justify-between w-full border-t px-8 py-4">
+                                <button
+                                    class="-ml-4"
+                                    mat-button
+                                    [color]="'warn'"
+                                    (click)="deleteSelectedProduct()">
+                                    Delete
+                                </button>
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex items-center mr-4"
+                                        *ngIf="flashMessage">
+                                        <ng-container *ngIf="flashMessage === 'success'">
+                                            <mat-icon
+                                                class="text-green-500"
+                                                [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                            <span class="ml-2">Company updated</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="flashMessage === 'error'">
+                                            <mat-icon
+                                                class="text-red-500"
+                                                [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+                                            <span class="ml-2">An error occurred, try again!</span>
+                                        </ng-container>
+                                    </div>
+                                    <button
+                                        mat-flat-button
+                                        [color]="'primary'"
+                                        (click)="updateSelectedProduct()">
+                                        Update
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template #noProducts>
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no products!</div>
+            </ng-template>
+
+        </div>
+
+    </div>
+
+</div>
