@@ -1,11 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Companies  } from 'app/Model/companies';
-import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { UserData } from 'app/Model/session';
-import { CompaniesPagination } from 'app/Model/CompaniesPagination';
 import { ApiResponse } from 'app/Model/apiresponse';
+import { UserData } from 'app/Model/session';
+import { catchError, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { companies } from 'app/Model/companies';
+
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +13,11 @@ import { ApiResponse } from 'app/Model/apiresponse';
 export class CompanieServiceService {
   private apiUrl = 'http://localhost:8080';
 
+  private companies: any[] = []; // Property to store fetched companies
+
   constructor(private http: HttpClient) { }
 
-  getCompanies(): Observable<ApiResponse> {
+  fetch(): Observable<ApiResponse> {
     // Get the userData from localStorage
     const userDataString = localStorage.getItem('userData');
     let accessToken = '';
@@ -42,11 +44,20 @@ export class CompanieServiceService {
     }
 
     // Send the HTTP request with the updated headers
-    return this.http.get<ApiResponse>(`${this.apiUrl}/api/companies`,{headers })
+    return this.http.get<ApiResponse>(`${this.apiUrl}/api/companies`, { headers })
       .pipe(
+        tap(response => {
+          // Store fetched companies in the service
+          this.companies = response.data.items;
+        }),
         catchError(error => {
           throw 'Error in retrieving companies: ' + error.message;
         })
       );
+  }
+
+  // Get stored companies
+  getCompanies(): any[] {
+    return this.companies;
   }
 }

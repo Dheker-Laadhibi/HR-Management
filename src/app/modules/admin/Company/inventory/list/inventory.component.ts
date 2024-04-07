@@ -25,8 +25,9 @@ import { debounceTime, map, merge, Observable, Subject, switchMap, takeUntil } f
 import { NotesLabelsComponent } from 'app/modules/admin/Company/inventory/labels/labels.component';
 import { UpdateComponent } from 'app/modules/admin/Company/inventory/update/update.component';
 import { AddComponent } from 'app/modules/admin/Company/inventory/add/add.component';
-import { Companies  } from 'app/Model/companies';
-import { CompaniesPagination } from 'app/Model/CompaniesPagination';
+import { companies  } from 'app/Model/companies';
+import { UserData } from 'app/Model/session';
+
 
 
 @Component({
@@ -58,13 +59,8 @@ import { CompaniesPagination } from 'app/Model/CompaniesPagination';
     standalone     : true,
     imports        : [NgIf, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
 })
-export class InventoryListComponent
-
-{
-
+export class InventoryListComponent implements OnInit {
    
-
-
     
    
 constructor( private CompanieServ:CompanieServiceService){
@@ -72,7 +68,7 @@ constructor( private CompanieServ:CompanieServiceService){
 }
 companies: any[]= [];
 ApiResponse:ApiResponse;
-public CompaniesPagination:CompaniesPagination;
+
 
 currentPage: number = 1;
 itemsPerPage: number = 10;
@@ -80,53 +76,23 @@ itemsPerPage: number = 10;
 ngOnInit(): void {
     // Initialisez les valeurs par défaut de la pagination
     
-    this.getCompanies(); // Chargez les entreprises avec les valeurs par défaut
+    this.loadCompanies(); // Chargez les entreprises avec les valeurs par défaut
   }
 
-   getCompanies(): void {
-    this.CompanieServ.getCompanies()
-      .subscribe((response) => {
-
-
-this.ApiResponse=response;
-        //this.companies =  response;
-        //console.log(this.companies);
-        console.log(response);
-        this.companies= response.data.items;
-        console.log("items",this.ApiResponse.data[0]);
-        
-        
-        console.log('Data received:', response.data.items);
-
-
-       console.log( response[1]);
-       
-      
-      //  console.log(response.da);
-        
-       
-        
-//console.log("tableau companies",this.CompaniesPagination);
-console.log("companies",this.companies);
-
-//
-
-
-      }, (error) => {
-        console.error('Error fetching allcompanies:', error);
-      });
-  }
- 
-
-
-
-
-
-
-
-
-
-
-
-
+  loadCompanies(): void {
+    // Retrieve companies from service
+    this.companies = this.CompanieServ.getCompanies();
+    // If companies are not already fetched, fetch them
+    if (this.companies.length === 0) {
+        this.CompanieServ.fetch().subscribe(
+            response => {
+                console.log('Data received:', response.data.items);
+                this.companies = response.data.items;
+            },
+            error => {
+                console.error('Error fetching companies:', error);
+            }
+        );
+    }
+}
 }

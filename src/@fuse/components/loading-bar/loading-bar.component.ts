@@ -1,3 +1,4 @@
+import { CompanieServiceService } from './../../../app/Services/companie-service.service';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { NgIf } from '@angular/common';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
@@ -14,7 +15,7 @@ import { Subject, takeUntil } from 'rxjs';
     standalone   : true,
     imports      : [NgIf, MatProgressBarModule],
 })
-export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy
+export class FuseLoadingBarComponent implements OnChanges, OnInit
 {
     @Input() autoMode: boolean = true;
     mode: 'determinate' | 'indeterminate';
@@ -25,7 +26,7 @@ export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy
     /**
      * Constructor
      */
-    constructor(private _fuseLoadingService: FuseLoadingService)
+    constructor(private _fuseLoadingService: FuseLoadingService , private CompanieServiceService :CompanieServiceService)
     {
     }
 
@@ -40,12 +41,12 @@ export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy
      */
     ngOnChanges(changes: SimpleChanges): void
     {
-        // Auto mode
+        /* // Auto mode
         if ( 'autoMode' in changes )
         {
             // Set the auto mode in the service
             this._fuseLoadingService.setAutoMode(coerceBooleanProperty(changes.autoMode.currentValue));
-        }
+        } */
     }
 
     /**
@@ -54,7 +55,7 @@ export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy
     ngOnInit(): void
     {
         // Subscribe to the service
-        this._fuseLoadingService.mode$
+         this._fuseLoadingService.mode$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((value) =>
             {
@@ -75,15 +76,12 @@ export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy
                 this.show = value;
             });
 
+
+         
+
     }
 
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
-    }
+    
+    
+   
 }

@@ -1,7 +1,7 @@
-import { Companies } from "./companies";
+import { companies } from "./companies";
 
 export interface CompaniesPagination {
-    items: Companies [];
+    items: companies [];
     page: number;
     limit: number;
     totalCount: number;

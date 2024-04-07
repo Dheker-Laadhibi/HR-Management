@@ -19,6 +19,8 @@ import { UserComponent } from 'app/layout/common/user/user.component';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthSignInComponent } from 'app/modules/auth/sign-in/sign-in.component'
 import { UserData } from 'app/Model/session';
+import { CompanieServiceService } from 'app/Services/companie-service.service';
+import { ApiResponse } from 'app/Model/apiresponse';
 
 @Component({
     selector     : 'classy-layout',
@@ -27,14 +29,16 @@ import { UserData } from 'app/Model/session';
     standalone   : true,
     imports      : [FuseLoadingBarComponent, FuseVerticalNavigationComponent, NotificationsComponent, UserComponent, NgIf, MatIconModule, MatButtonModule, LanguagesComponent, FuseFullscreenComponent, SearchComponent, ShortcutsComponent, MessagesComponent, RouterOutlet, QuickChatComponent],
 })
-export class ClassyLayoutComponent implements OnInit, OnDestroy
+export class ClassyLayoutComponent implements OnInit
 {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     userType: string;
     isScreenSmall: boolean;
     navigation: Navigation;
     userData: UserData;
-
+    
+    companies: any[]= [];
+    ApiResponse:ApiResponse;
 
     /**
      * Constructor
@@ -45,7 +49,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
         private _navigationService: NavigationService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fuseNavigationService: FuseNavigationService,
-
+        private CompanieServ:CompanieServiceService
     )
     {
     }
@@ -77,6 +81,9 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
             this.userData = JSON.parse(userDataString) as UserData;
             console.log("userData",userDataString);
             
+
+
+            
         }
 
 
@@ -97,18 +104,20 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
                 // Check if the screen is small
                 this.isScreenSmall = !matchingAliases.includes('md');
             });
+
+
+
+
     }
 
 
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
-    }
+    
+ 
+
+
+
+
+
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
