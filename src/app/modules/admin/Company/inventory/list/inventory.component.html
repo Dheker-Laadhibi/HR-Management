@@ -28,12 +28,12 @@
             </mat-form-field>
             <!-- Add product button -->
             <button
-                class="ml-4"
-                mat-flat-button
-                [color]="'primary'"
-                >
-                <span class="ml-2 mr-1">Add</span>
-            </button>
+            class="ml-4"
+            mat-flat-button
+            [color]="'primary'"
+            (click)="openAddDialog()">
+            <span class="ml-2 mr-1">Add</span>
+        </button>
         </div>
     </div>
 
@@ -41,7 +41,7 @@
     <div class="flex flex-auto overflow-hidden">
         <!-- companies  list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden">
-            <ng-container *ngIf=" companies.length > 0" >
+            <ng-container  >
                 <ng-container >
                     <div class="grid">
                         <!-- Header -->
@@ -54,22 +54,22 @@
                             <div
                                 class="hidden sm:block"
                                 [mat-sort-header]="'price'">
-                                Website
-                            </div>
-                            <div
-                                class="hidden lg:block"
-                                [mat-sort-header]="'stock'">
                                 Email
                             </div>
                             <div
                                 class="hidden lg:block"
+                                [mat-sort-header]="'stock'">
+                              Website
+                            </div>
+                            <div
+                                class="hidden lg:block"
                                 [mat-sort-header]="'active'">
-                                Phone Number
+                                createdAt
                             </div>
                             <div class="hidden sm:block">Details</div>
                         </div>
                         <!-- Rows -->
-                        <ng-container *ngFor="let company of companies">
+                        <ng-container *ngFor="let companie of Companies">
                             <ng-container>
                                 <a class="inventory-row" >
 
@@ -77,7 +77,7 @@
 
                                         <!-- Name -->
                                     <div class="flex">
-                                        {{ company.name }}
+                                        {{ companie.name }}
                                     </div>
 
                                     <!-- Price -->
@@ -87,12 +87,16 @@
 
                                     <!-- Stock -->
                                     <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4">{{company.email}}</div>
+                                        <div class="min-w-4">{{companie.email}}</div>
+                                    </div>
+                                      <!-- Stock -->
+                                      <div class="hidden lg:flex items-center">
+                                        <div class="min-w-4">{{companie.website}}</div>
                                     </div>
 
                                     <!-- Stock -->
                                     <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4">{{company.createdAt}}</div>
+                                        <div class="min-w-4">{{companie.createdAt}}</div>
                                     </div>
 
                                     <!-- Details button -->
@@ -144,70 +148,9 @@
                 </ng-container>
             </ng-container>
 
-            <ng-template
-                #rowDetailsTemplate
-                let-product>
-                <div class="shadow-lg overflow-hidden">
-                    <div class="flex border-b">
-                        <!-- Selected product form -->
-                        <form
-                            class="flex flex-col w-full"
-                            [formGroup]="selectedProductForm">
+           
 
-                            <div class="flex flex-col sm:flex-row p-8">
-
-
-
-                                <div class="flex flex-auto flex-wrap">
-                                    <!-- Name, SKU & etc. -->
-                                    <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
-
-                                        <!-- Name -->
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Name</mat-label>
-                                            <input
-                                                matInput
-                                                [formControlName]="'name'">
-                                        </mat-form-field>
-
-                                        <!-- SKU and Barcode -->
-                                        <div class="flex">
-                                            <mat-form-field class="w-1/3 pr-2">
-                                                <mat-label>Website</mat-label>
-                                                <input
-                                                    matInput
-                                                    [formControlName]="'sku'">
-                                            </mat-form-field>
-                                            <mat-form-field class="w-2/3 pl-2">
-                                                <mat-label>Email</mat-label>
-                                                <input
-                                                    matInput
-                                                    [formControlName]="'barcode'">
-                                            </mat-form-field>
-                                        </div>
-
-                                        <!-- Stock and Reserved -->
-                                        <div class="flex">
-                                            <mat-form-field class="w-1/3 pr-2">
-                                                <mat-label>Phone Number</mat-label>
-                                                <input
-                                                    matInput
-                                                    [formControlName]="'stock'">
-                                            </mat-form-field>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </ng-template>
-
-            
-
-                      <ng-template #noProducts>
+                      <ng-template #tpm>
                 <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no products!</div>
             </ng-template>
 
