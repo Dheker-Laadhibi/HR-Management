@@ -64,7 +64,7 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
     categories: InventoryCategory[];
     filteredTags: InventoryTag[];
     flashMessage: 'success' | 'error' | null = null;
-    isLoading: boolean = false;
+   isLoading: boolean = false; 
     pagination: InventoryPagination;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedProduct: InventoryProduct | null = null;

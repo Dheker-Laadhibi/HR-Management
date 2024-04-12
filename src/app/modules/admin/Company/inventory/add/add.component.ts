@@ -60,7 +60,7 @@ export class AddComponent implements OnInit, OnDestroy
     composeForm: FormGroup;
     userDataString = localStorage.getItem('userData');
     userData: UserData = JSON.parse(this.userDataString);
-    
+    CompanyId = this.userData[1].data.user.workCompanyId || '';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
 
@@ -99,7 +99,10 @@ export class AddComponent implements OnInit, OnDestroy
     ngOnInit(): void
     {
         this.composeForm = this.formBuilder.group({  
-            name: ['']
+            name: [''],
+            
+            email: [''], // Ajoutez le champ email
+            website: [''] // Ajoutez le champ website
         });
     }
 
@@ -134,9 +137,12 @@ export class AddComponent implements OnInit, OnDestroy
         if (this.composeForm.valid) {
             // Check if the conversion is successful
            
-                const request = {
-                    
+                const companyUpdate = {
+                    id:this.CompanyId,
                     name: this.composeForm.value.name,
+                    email:this.composeForm.value.email,
+                    website:this.composeForm.value.website,
+                    createdAt:this.composeForm.value.createdAt
                     
                 };
                
@@ -144,19 +150,20 @@ export class AddComponent implements OnInit, OnDestroy
 
 
                 
-                this.CompanieServiceService.addCompany( request).subscribe(
+                this.CompanieServiceService.updateCompany( this.CompanyId,companyUpdate).subscribe(
                     response => {
                         this.type ='success'         
                   console.log("name of company",this.composeForm.value.name);
+                       console.log("companyyyyyyy id mabroukk!!!!",this.CompanyId);
                        
-                    console.log('company added successfully:', response);
+                    console.log('company update successfully:', response);
                    console.log(this.type);
                    if (this.type ='success')   {
-                    this.openSnackBar('added successfuy', 'Close');
+                    this.openSnackBar('update successfuy', 'Close');
                    }
                   
                         // Handle success response
-                        console.log('company added successfully:', response);
+                        console.log('company update successfully:', response);
                     
                         this.matDialogRef.close();
                       

@@ -1,7 +1,7 @@
 <div class="flex flex-col flex-auto w-200 min-w-80 p-2 md:p-4">
     <!-- Header -->
     <div class="flex items-center justify-between">
-        <div class="text-2xl font-semibold"> Add a new company !    </div>
+        <div class="text-2xl font-semibold"> Update more details..    </div>
         <button matDialogClose mat-icon-button   (click)="saveAndClose()">
            
             <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
@@ -18,7 +18,18 @@
             [formControlName]="'name'">
     </mat-form-field>
 
-            
+    <mat-form-field>
+        <mat-label>email</mat-label>
+        <input
+            matInput
+            [formControlName]="'email'">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>website</mat-label>
+        <input
+            matInput
+            [formControlName]="'website'">
+    </mat-form-field>
 
            
              <!-- Actions -->
@@ -40,7 +51,7 @@
                 mat-flat-button
                     [color]="'primary'"
                     (click)="send()">
-                    Send
+                    Update
                 </button>
 
             </div>

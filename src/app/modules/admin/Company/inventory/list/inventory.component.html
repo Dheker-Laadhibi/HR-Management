@@ -32,7 +32,7 @@
             mat-flat-button
             [color]="'primary'"
             (click)="openAddDialog()">
-            <span class="ml-2 mr-1">Add</span>
+            <span class="ml-2 mr-1">Update</span>
         </button>
         </div>
     </div>
@@ -66,10 +66,10 @@
                                 [mat-sort-header]="'active'">
                                 createdAt
                             </div>
-                            <div class="hidden sm:block">Details</div>
+                        
                         </div>
                         <!-- Rows -->
-                        <ng-container *ngFor="let companie of Companies">
+                        <ng-container *ngFor="let company of companies">
                             <ng-container>
                                 <a class="inventory-row" >
 
@@ -77,46 +77,36 @@
 
                                         <!-- Name -->
                                     <div class="flex">
-                                        {{ companie.name }}
+                                        {{ company.name }}
+                                      
                                     </div>
 
-                                    <!-- Price -->
-                                    <div class="hidden sm:block">
                                     
-                                    </div>
 
                                     <!-- Stock -->
                                     <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4">{{companie.email}}</div>
+                                        <div class="min-w-4">{{company.email}}</div>
                                     </div>
                                       <!-- Stock -->
                                       <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4">{{companie.website}}</div>
+                                        <div class="min-w-4">{{company.website}}</div>
                                     </div>
 
                                     <!-- Stock -->
                                     <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4">{{companie.createdAt}}</div>
+                                        <div class="min-w-4">{{company.createdAt}}</div>
                                     </div>
 
                                     <!-- Details button -->
                                     <div class="inventory-grid grid items-center gap-10  h-12 gap-10 py-3 px-6 md:px-8">
-                                    <div>
-                                        <button
-                                            class="-ml-4 w-20 min-h-5 h-5 px-2 leading-6"
-                                            mat-flat-button
-                                            [color]="'primary'"
-                                          >
-                                            Update
-                                        </button>
-
-                                    </div>
+                                    
 
                                     <div>
                                         <button
                                             class="w-20 min-h-5 h-5 px-2 -ml-4 leading-6"
-                                            mat-button
+                                            mat-flat-button
                                             [color]="'warn'"
+                                            (click)="openDeleteDialog()"
                                             >
 
                                             Delete
