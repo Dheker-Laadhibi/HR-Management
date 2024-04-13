@@ -1,5 +1,5 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {   Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -12,7 +12,7 @@ import { debounceTime, filter, Observable, Subject, switchMap, takeUntil } from 
     selector       : 'notes-labels',
     templateUrl    : './labels.component.html',
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+   
     standalone     : true,
     imports        : [MatButtonModule, MatDialogModule, MatIconModule, MatFormFieldModule, MatInputModule, NgIf, NgFor, FormsModule, AsyncPipe],
 })
@@ -25,7 +25,6 @@ export class NotesLabelsComponent implements OnInit, OnDestroy
      * Constructor
      */
     constructor(
-        private _changeDetectorRef: ChangeDetectorRef,
     )
     {
     }

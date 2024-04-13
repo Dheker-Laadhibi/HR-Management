@@ -22,7 +22,11 @@ export class AuthInterceptorService implements HttpInterceptor {
         // Parse the userData to extract the access token
         if (userDataString) {
             const userData: UserData = JSON.parse(userDataString);
-            accessToken = userData.data?.accessToken || '';
+            console.log("userdata " ,userData );
+            
+            accessToken = userData[1].data?.accessToken || '';
+            console.log(accessToken);
+            
         }
 
         // Clone the request and add the token to the headers if it exists
@@ -30,8 +34,12 @@ export class AuthInterceptorService implements HttpInterceptor {
             request = request.clone({
                 setHeaders: {
                     Authorization: `Bearer ${accessToken}`
+                  
                 }
+                
+                    
             });
+            console.log("headerrrrrrrr",accessToken);
         }
 
         // Pass the request on to the next handler

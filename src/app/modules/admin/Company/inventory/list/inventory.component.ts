@@ -1,10 +1,9 @@
 import { lists } from './../../../../../mock-api/apps/scrumboard/data';
 import { ApiResponse } from './../../../../../Model/apiresponse';
 import { items } from './../../../../../mock-api/apps/file-manager/data';
-
 import { CompanieServiceService } from './../../../../../Services/companie-service.service';
 import { AsyncPipe, CurrencyPipe, NgClass, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
@@ -30,6 +29,8 @@ import { CompaniesDetails, CompaniesPagination, CompaniesTable  } from 'app/Mode
 import { UserData } from 'app/Model/session';
 import { ActivatedRoute, Router } from '@angular/router';
 import { limits } from 'chroma-js';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptorService } from 'app/Services/auto-interceptor.service';
 
 
 
@@ -58,16 +59,16 @@ import { limits } from 'chroma-js';
         `,
     ],
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    animations     : fuseAnimations,
     standalone     : true,
-    imports        : [NgIf, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
+    imports        : [NgIf, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe, HttpClientModule,]
+    ,
+    
 })
 export class InventoryListComponent implements OnInit {
     page=1;
+    limits=10;
 
-
-    companies: CompaniesTable[] = [];
+    companies: any[] = [];
     private destroy$ = new Subject<void>();
     CompaniesPagination: CompaniesPagination;
     selectedCompany: CompaniesTable | null = null;
@@ -81,21 +82,24 @@ export class InventoryListComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // Initialisez les valeurs par défaut de la pagination
-        console.log( "CompanyId",this.userData[1].data.user.workCompanyId || '');
-          
-        this.fetchCompanies(); // Chargez les entreprises avec les valeurs par défaut
+        this.fetchCompanies();
+        setInterval(() => {
+            this.fetchCompanies();
+        }, 5000);
       }
       constructor( private CompanieServ:CompanieServiceService,
     
         private _fuseConfirmationService: FuseConfirmationService,
-        private _router: Router,
-        private _activatedRoute: ActivatedRoute,
+        
         private _matDialog: MatDialog,
-    
+       // Call fetch() asynchronously to wait for access token
+
         
         
-        ){}
+        ){
+
+           
+        }
     openInfosDialog(): void
     {
         this._matDialog.open(NotesLabelsComponent, {autoFocus: false});
@@ -126,7 +130,19 @@ export class InventoryListComponent implements OnInit {
 
 
     
-   
+    fetchCompanies(): void {
+        console.log('Fetching loan requests...');
+        this.CompanieServ.getAllCompanies(this.page,this.limits).subscribe(
+            response => {
+                console.log('Data received:', response.data.items);
+                this.companies = response.data.items;
+               
+            },
+            error => {
+                console.error('Error fetching loan requests:', error);
+            }
+        );
+    }
 
 
 
@@ -135,36 +151,13 @@ export class InventoryListComponent implements OnInit {
 
 
 
-    /**
-     * On destroy
-     */
     ngOnDestroy(): void
     {
         this.destroy$.next();
         this.destroy$.complete();
     }
-limit=20;
+
 
   
-    fetchCompanies(): void {
-        this.CompanieServ.getAllCompanies(this.page,this.limit).subscribe({
-          next: (response: ApiResponse) => {
-            console.log(response);
-            
-        
-              this.companies = response.data.items;
-           
-          },
-          error: (error) => {
-            console.error('Error fetching companies:', error);
-          }
-        });
-      }
-
-
-    }
-
-
-   
-
-
+ 
+}

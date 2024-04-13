@@ -1,5 +1,5 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {   Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -32,7 +32,7 @@ import { CompanieServiceService } from 'app/Services/companie-service.service';
     }
   `],
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+
     standalone     : true,
     imports        : [MatButtonModule, MatDialogModule, MatIconModule, MatFormFieldModule,
          MatInputModule, NgIf, NgFor, FormsModule, AsyncPipe,
@@ -58,7 +58,7 @@ export class UpdateComponent implements OnInit, OnDestroy
         private _snackBar: MatSnackBar,
         private CompanieServiceService: CompanieServiceService ,// Use the loan requests service directly
         public matDialogRef: MatDialogRef<UpdateComponent>,
-        private _changeDetectorRef: ChangeDetectorRef,
+      
     )
     {
     }

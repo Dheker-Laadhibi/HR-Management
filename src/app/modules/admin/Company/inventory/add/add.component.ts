@@ -1,6 +1,6 @@
 import { CompanieServiceService } from 'app/Services/companie-service.service';
 import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {  ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -34,7 +34,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     }
   `],
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone     : true,
     imports: [
         MatButtonModule,

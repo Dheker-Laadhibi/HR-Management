@@ -15,49 +15,36 @@ import { CompaniesPagination, CompaniesTable, CompanyIn } from 'app/Model/compan
 export class CompanieServiceService {
 
 
-
+page:1;
+limit:10;
    Companies: CompaniesTable[] = []; 
    apiUrl = 'http://localhost:8080/api';
 CompaniesPagination: CompaniesPagination; // Property to store fetched companies
-  private headers: HttpHeaders;
-  constructor(private http: HttpClient) {
-    this.fetch();
-  }
+ // private headers: HttpHeaders;
+ private headers: HttpHeaders;
 
+ constructor(private http: HttpClient) {
+   const userDataString = localStorage.getItem('userData');
+   let accessToken = '';
 
- 
- 
-  
-  private getAccessToken(): string {
-    const userDataString = localStorage.getItem('userData');
-    let accessToken = '';
-    if (userDataString) {
-      try {
-        const userData: UserData = JSON.parse(userDataString);
-        accessToken = userData[1].data.accessToken || '';
-        console.log("accessToken",accessToken);
-        
-      } catch (error) {
-        console.error('Error parsing userData:', error);
-      }
-    } else {
-      console.warn('No userData found in localStorage');
-    }
-    return accessToken;
-  }
+   if (userDataString) {
+     try {
+       const userData: UserData = JSON.parse(userDataString);
+       accessToken = userData[1].data.accessToken || '';
+     } catch (error) {
+       console.error('Error parsing userData:', error);
+     }
+   } else {
+     console.warn('No userData found in localStorage');
+   }
 
-   fetch(): void {
-    const accessToken = this.getAccessToken();
-    this.headers = new HttpHeaders();
-    if (accessToken) {
-      this.headers = this.headers.set('Authorization', `Bearer ${accessToken}`);
-    }
-    console.log("accessToken from fetch",accessToken);
-    
-    console.log('Access Token:', accessToken);
-  }
+   console.log('Access Token:', accessToken);
 
-
+   this.headers = new HttpHeaders();
+   if (accessToken) {
+     this.headers = this.headers.set('Authorization', `Bearer ${accessToken}`);
+   }
+ }
   addCompany( companieIn: CompanyIn): Observable<any> {
     return this.http.post(`${this.apiUrl}/companies`, companieIn, { headers: this.headers });
 
@@ -75,26 +62,12 @@ CompaniesPagination: CompaniesPagination; // Property to store fetched companies
   getAllCompanies(  page: number, limit: number): Observable<ApiResponse> {
     
     
-    return this.http.get<ApiResponse>(`${this.apiUrl}/companies?page=${page}&limit=${limit}`,{ headers: this.headers }).pipe(
-      tap(response => {
-        
-        console.log("rep:", response);
-        
-      
-          // Store fetched companies in the service
-          this.Companies = response.data.items;
-       
-        console.log("Companies", this.Companies);
-        
-        
-      }), catchError(error => {
-        throw 'Error in retrieving companies: ' + error.message;
-      })
-    );;
+    return this.http.get<ApiResponse>(`${this.apiUrl}/companies?page=${page}&limit=${limit}`, {  headers: this.headers });
+    
   }
 
  deleteCompany(companyId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/companies/${companyId}`, { headers: this.headers });
+    return this.http.delete(`${this.apiUrl}/companies/${companyId}`);
   }
 
 
