@@ -1,24 +1,34 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
+import {  ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { ProjectTable } from 'app/Model/projects';
 import { debounceTime, filter, Observable, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
     selector       : 'notes-labels',
     templateUrl    : './labels.component.html',
+    styles         : [
+        /* language=SCSS */
+    `
+    .custom-title {
+        color: red;
+    }
+    `,
+    ],
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone     : true,
-    imports        : [MatButtonModule, MatDialogModule, MatIconModule, MatFormFieldModule, MatInputModule, NgIf, NgFor, FormsModule, AsyncPipe],
+    imports        : [MatButtonModule, MatDialogModule, MatIconModule, MatFormFieldModule, MatInputModule, NgIf, NgFor, FormsModule, AsyncPipe , CommonModule],
 })
 export class NotesLabelsComponent implements OnInit, OnDestroy
 {
-
+    
+   
+    
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -26,11 +36,12 @@ export class NotesLabelsComponent implements OnInit, OnDestroy
      */
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
+        @Inject(MAT_DIALOG_DATA) public data: { project: ProjectTable } 
+        
     )
     {
     }
-
-    // -----------------------------------------------------------------------------------------------------
+// Convertir la chaîne de caractères en objet Date---------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
@@ -38,8 +49,9 @@ export class NotesLabelsComponent implements OnInit, OnDestroy
      * On init
      */
     ngOnInit(): void
-    {
-
+    {console.log("down we transfered project");
+    console.log( "dateeeeeeee",this.data.project );
+        console.log( "dateeeeeeee",this.data.project.expdate );
     }
 
     /**
@@ -75,4 +87,12 @@ export class NotesLabelsComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
+
+
+
+
+
+
+
+    
 }

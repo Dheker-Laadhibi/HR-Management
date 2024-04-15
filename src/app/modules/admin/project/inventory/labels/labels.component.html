@@ -1,10 +1,13 @@
 <div class="flex flex-col flex-auto w-200 min-w-80 p-2 md:p-4">
     <!-- Header -->
-    <div class="flex items-center justify-between">
-        <div class="text-2xl font-semibold">More informations</div>
+    <div class="flex items-center justify-center">
+        <div class="text-4xl  custom-title  " 
+          >More informations</div>
         <button
+       
             matDialogClose
-            mat-icon-button>
+            mat-icon-button 
+            [color]="'warn'">
             <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
         </button>
     </div>
@@ -15,11 +18,17 @@
 
         <!-- Tags -->
         <ng-container>
-            <div class="flex flex-wrap items-center mt-2">
+            <div class=" justify-center items-center mt-2">
                 <!-- Tag -->
                 <ng-container>
-                    <div class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                        <span class="text-sm font-medium whitespace-nowrap">Date of expiration</span>
+                    <div class="flex items-center justify-center mr-4 py-1 px-3 mr-3 mb-3  text-2xl font-semibold">
+                        <span class="font-bold whitespace-nowrap   mat-warn">Project's expiry :</span>
+                    </div>
+                    
+                    
+
+                    <div class="flex items-center justify-center ml-4 py-1 px-3 mr-3 mb-3  leading-normal text-gray-700 bg-gray-300 dark:text-gray-900 dark:bg-gray-700">
+                        <span class="whitespace-nowrap">{{ data.project.expdate| date: 'yyyy-MM-dd' }}</span>
                     </div>
                 </ng-container>
             </div>

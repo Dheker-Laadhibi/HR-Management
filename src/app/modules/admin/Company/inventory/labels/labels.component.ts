@@ -12,7 +12,6 @@ import { debounceTime, filter, Observable, Subject, switchMap, takeUntil } from 
     selector       : 'notes-labels',
     templateUrl    : './labels.component.html',
     encapsulation  : ViewEncapsulation.None,
-   
     standalone     : true,
     imports        : [MatButtonModule, MatDialogModule, MatIconModule, MatFormFieldModule, MatInputModule, NgIf, NgFor, FormsModule, AsyncPipe],
 })
