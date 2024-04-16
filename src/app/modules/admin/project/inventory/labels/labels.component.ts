@@ -36,14 +36,15 @@ export class NotesLabelsComponent implements OnInit, OnDestroy
      */
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
+        // injecter des données dans un dialogue.
+        /*Cela signifie que lorsque ce dialogue est instancié, 
+        il recevra des données sous forme d'objet avec une propriété project, qui sera de type ProjectTable.*/ 
         @Inject(MAT_DIALOG_DATA) public data: { project: ProjectTable } 
         
     )
     {
     }
-// Convertir la chaîne de caractères en objet Date---------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
+
 
     /**
      * On init
@@ -51,7 +52,7 @@ export class NotesLabelsComponent implements OnInit, OnDestroy
     ngOnInit(): void
     {console.log("down we transfered project");
     console.log( "dateeeeeeee",this.data.project );
-        console.log( "dateeeeeeee",this.data.project.expdate );
+        console.log( "dateeeeeeee labe",this.data.project.expdate );
     }
 
     /**

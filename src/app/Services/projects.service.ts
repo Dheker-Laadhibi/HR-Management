@@ -40,7 +40,7 @@ export class ProjectsService {
      }
    }
 // Méthode pour créer un nouveau projet
-createProject(companyID: string, project:ProjectIn     ) {
+createProject(companyID: string, project:any     ) {
   // Ajoutez l'ID de l'entreprise à l'URL
   const url = `${this.apiUrl}/projects/${companyID}`;
 

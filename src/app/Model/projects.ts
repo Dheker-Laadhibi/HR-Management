@@ -3,16 +3,16 @@ export interface ProjectIn {
     code: string;
     projectname: string;
     description: string;
-    specialty?: string;
-    technologies: string[];
-    expDate: Date;
+    Specialty: string;
+    technologies: Text[];
+    expDate: string;
   }
   
   // Interface représentant une entrée de projet dans une table
   export interface ProjectTable {
     id: string;
     code: string;
-    specialty?: string;
+    Specialty: string;
     projectname: string;
     technologies: string[];
     companyID: string;

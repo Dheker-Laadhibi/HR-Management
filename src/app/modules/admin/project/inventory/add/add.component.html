@@ -8,35 +8,59 @@
     </div>
 
     <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
-        <form class="mt-8">
+        <form class="mt-8" [formGroup]="composeForm"  >
 
             <!-- Name field -->
             <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Project Name</mat-label>
-                <input matInput>
+                <input
+                matInput
+                [formControlName]="'projectname'">
             </mat-form-field>
 
             <!-- Email field -->
             <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Code</mat-label>
-                <input matInput>
+                <input
+                matInput [formControlName]="'code'">
             </mat-form-field>
 
             <!-- Password field -->
             <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Technologies</mat-label>
-                <input matInput type="email">
+                <input
+                matInput [formControlName]="'technologies'"  >
             </mat-form-field>
 
-            <!-- Gender field -->
+           
+
             <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Specialty</mat-label>
-                <input matInput>
+                <mat-label>Speciality</mat-label>
+                <input
+                matInput [formControlName]="'speciality'">
             </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>description</mat-label>
+                <input
+                matInput [formControlName]="'description'">
+            </mat-form-field>
+             <!-- Gender field -->
+             
+
+<!-- Expiry Date field -->
+<mat-form-field appearance="outline" class="w-full">
+    <mat-label>Expiry Date</mat-label>
+    <input
+    matInput [formControlName]="'exp_date'" [matDatepicker]="exp_date" formControlName="exp_date">
+    <mat-datepicker-toggle matSuffix [for]="exp_date"></mat-datepicker-toggle>
+    <mat-datepicker #exp_date></mat-datepicker>
+</mat-form-field>
 
 
             <!-- Submit button -->
-            <button class="fuse-mat-button w-full mt-1" mat-flat-button color="primary">
+            <button class="fuse-mat-button w-full mt-1" mat-flat-button color="primary" 
+            (click)="send()">
                 <span>Add</span>
             </button>
 

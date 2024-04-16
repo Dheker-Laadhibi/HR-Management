@@ -82,9 +82,7 @@ export class InventoryListComponent implements OnInit
 
     ngOnInit(): void {
         this.fetchProjects();
-        setInterval(() => {
-            this.fetchProjects();
-        }, 5000);
+       
       }
       constructor( private ProjectsService:ProjectsService,
     
@@ -138,7 +136,7 @@ export class InventoryListComponent implements OnInit
 
     
     fetchProjects(): void {
-        console.log('Fetching loan requests...');
+        console.log('Fetching  projects...');
         this.ProjectsService.getAllProjects(this.CompanyId,this.page,this.limits).subscribe(
             response => {
                 console.log('Data received:', response.data.items);
