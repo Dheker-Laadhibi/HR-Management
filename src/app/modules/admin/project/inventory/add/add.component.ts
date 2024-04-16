@@ -13,6 +13,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { UserData } from 'app/Model/session';
 import { DateTime } from 'luxon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
     selector       : 'notes-labels',
@@ -21,7 +22,7 @@ import { DateTime } from 'luxon';
     standalone     : true,
     imports        : [MatButtonModule,
         ReactiveFormsModule, FormsModule, MatDialogModule, MatIconModule, MatFormFieldModule, MatInputModule, NgIf, NgFor, AsyncPipe, MatDatepickerModule,
-        MatNativeDateModule,MatNativeDateModule],
+        MatNativeDateModule,MatNativeDateModule,MatSnackBarModule,],
 })
 export class AddComponent implements OnInit, OnDestroy
 {
@@ -41,6 +42,7 @@ export class AddComponent implements OnInit, OnDestroy
      * Constructor
      */
     constructor(
+      private _snackBar: MatSnackBar,
         public matDialogRef: MatDialogRef<AddComponent>,
         private formBuilder: FormBuilder, // Use FormBuilder directly
         private _changeDetectorRef: ChangeDetectorRef,
@@ -52,6 +54,14 @@ export class AddComponent implements OnInit, OnDestroy
        
 
       
+    }
+    openSnackBar(message: string, type: string) { 
+      this._snackBar.open(message, 'close', {
+          duration: 3000,
+          verticalPosition: 'top',
+          panelClass: [type === 'error' ? 'mat-snack-bar-container-error' : 'mat-snack-bar-container-success'] // Appliquer la classe de couleur en fonction du type
+        });
+        
     }
     
 
@@ -165,7 +175,7 @@ if(expDateTime>currentDate){
        
     } else {
         // Gérer le cas où expDateTime n'est pas une instance de Date
-
+        
         console.log("nest pas instance de date ");
     }
   
@@ -182,12 +192,21 @@ if(expDateTime>currentDate){
       // Envoyer les données au serveur
       this.ProjectsService.createProject(this.CompanyId, projectData).subscribe(
         (response) => {
+          this.type ='success'  
           console.log('Projet ajouté avec succès :', response);
-          
+          if (this.type ='success')   {
+            this.openSnackBar(' new project added successfuy', 'Close');
+            this.matDialogRef.close();
+           }
           
           // Gérer la réponse du serveur si nécessaire
         },
         (error) => {
+
+          if (this.type = 'error')  {
+            this.openSnackBar('Error message while adding ', 'Close');
+          
+         }
           console.error('Erreur lors de l\'ajout du projet :', error);
           // Gérer l'erreur si nécessaire
         }
@@ -221,7 +240,10 @@ if(expDateTime>currentDate){
 
 
 
-
+onCancel(): void {
+  // Fermer le dialogue sans rien faire
+  this.matDialogRef.close();
+}
 
 
     }
