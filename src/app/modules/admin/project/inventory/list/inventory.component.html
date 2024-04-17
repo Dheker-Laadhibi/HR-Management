@@ -73,28 +73,28 @@
                         <ng-container >
                             <ng-container *ngFor="let project of projects">
                                 <!--(click)="openInfosDialog(product);"   fonction afficher details project -->
-                                <a class="inventory-row" (click)="openInfosDialog(project)"   >
+                                <a class="inventory-row"   >
 
                                 <div class="inventory-grid grid items-center h-12 gap-30 py-3 px-6 md:px-8 border-b">
 
                                         <!-- Name -->
-                                    <div class="flex">
+                                    <div class="flex"(click)="openInfosDialog(project)" >
                                         {{project.projectname}}
                                     </div>
 
                                     <!-- Price -->
-                                    <div class="hidden sm:block">
+                                    <div class="hidden sm:block"(click)="openInfosDialog(project)" >
                                         {{project.code}}
                                     </div>
 
                                     <!-- Stock -->
                                     <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4">{{project.technologies}}</div>
+                                        <div class="min-w-4" (click)="openInfosDialog(project)" >{{project.technologies}}</div>
                                     </div>
 
                                     <!-- Stock -->
                                     <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4">   {{project.speciality}}</div>
+                                        <div class="min-w-4" (click)="openInfosDialog(project)" >   {{project.speciality}}</div>
                                     </div>
 
                                     <!-- Details button -->
@@ -104,7 +104,7 @@
                                             class="-ml-4 w-20 min-h-5 h-5 px-2 leading-6"
                                             mat-flat-button
                                             [color]="'primary'"
-                                            (click)="openEditLabelsDialog(); $event.stopPropagation()">
+                                            (click)="openEditLabelsDialog(project.id)">
                                             Update
                                         </button>
 
@@ -115,8 +115,9 @@
                                             class="w-20 min-h-5 h-5 px-2 -ml-4 leading-6"
                                             mat-button
                                             [color]="'warn'"
+                                            (click)="openDeleteDialog(project.id)"
                                             >
-
+ 
                                             Delete
                                         </button>
                                     </div>

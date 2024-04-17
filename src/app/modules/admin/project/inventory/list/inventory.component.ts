@@ -24,6 +24,7 @@ import { UpdateComponent } from 'app/modules/admin/project/inventory/update/upda
 import { AddComponent } from 'app/modules/admin/project/inventory/add/add.component';
 import { UserData } from 'app/Model/session';
 import { ProjectTable } from 'app/Model/projects';
+import { deleteComponent } from '../delete/delete.component';
 
 
 
@@ -108,13 +109,39 @@ export class InventoryListComponent implements OnInit
             console.log('The dialog was closed');
           });
     }
+    /* open dialog for dlt*/ 
+    openDeleteDialog(projectId: string) {
+        console.log('Deleting project with ID:', projectId);
+        this._matDialog.open(deleteComponent, {
+            autoFocus: false,
+            panelClass: 'custom-dialog',
+            data: { projectId: projectId } // Passer l'ID du projet comme données
+        });
+    }
+
+
+
+    /*openEditLabelsDialog(projectId: string): void
+     {
+        console.log('Updating project with ID:', projectId);
+        this._matDialog.open(UpdateComponent, {
+            autoFocus: false,
+            panelClass: 'custom-dialog',
+            data: { projectId: projectId } // Passer l'ID du projet comme données
+        });
+     }*/ 
 
      /**
     * Open the edit labels dialog
     */
-     openEditLabelsDialog(): void
+     openEditLabelsDialog(projectId: string): void
      {
-         this._matDialog.open(UpdateComponent, {autoFocus: false});
+        console.log('Updating project with ID:', projectId);
+        this._matDialog.open(UpdateComponent, {
+            autoFocus: false,
+            panelClass: 'custom-dialog',
+            data: { projectId: projectId } // Passer l'ID du projet comme données
+        });
      }
      //for add 
      openAddDialog() {
@@ -125,12 +152,7 @@ export class InventoryListComponent implements OnInit
     }
 
 /* open dialog for dlt*/ 
-    openDeleteDialog() {
-        this._matDialog.open(UpdateComponent, {
-            autoFocus: false,
-            panelClass: 'custom-dialog'
-        });
-    }
+   
 
 
 

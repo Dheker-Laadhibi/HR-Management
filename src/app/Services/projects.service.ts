@@ -49,13 +49,21 @@ createProject(companyID: string, project:any     ) {
 }
 
 
+updateProject(companyId: string, projectId: string, projectUpdate: any): Observable<any> {
+  return this.http.put(`${this.apiUrl}/projects/${companyId}/${projectId}`, projectUpdate, { headers: this.headers });
+}
+
 getAllProjects(companyID: string, page : number , limit : number): Observable<ApiResponse> {
     
     
   return this.http.get<ApiResponse>(`${this.apiUrl}/projects/${companyID}?page=${page}&limit=${limit}`, {  headers: this.headers });
   
 }
+deleteProject(companyId: string,projectId: string): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/projects/${companyId}/${projectId}`, { headers: this.headers }
 
+  );
+}
 
 
 

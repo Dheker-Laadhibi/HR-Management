@@ -1,0 +1,39 @@
+<div class="flex flex-col flex-auto w-200 min-w-80 p-2 md:p-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div class="text-2xl font-semibold"> Delete the company!!   </div>
+        <button matDialogClose mat-icon-button   (click)="saveAndClose()">
+           
+            <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+        </button>
+    </div>
+   
+
+           
+             <!-- Actions -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6">
+
+
+            <div class="flex items-center mt-4 sm:mt-0">
+                <!-- Discard -->
+                <button
+                    class="ml-auto mr-10 sm:ml-0"
+                    mat-flat-button
+                    [color]="'warn'"
+                    (click)="onCancel()">
+                    Discard
+                </button>
+                <!-- Send -->
+                <button
+                class="ml-auto   sm:ml-0"
+                mat-flat-button
+                    [color]="'primary'"
+                    (click)="send()">
+                    delete
+                </button>
+
+            </div>
+        </div>
+       
+    </div>
+
