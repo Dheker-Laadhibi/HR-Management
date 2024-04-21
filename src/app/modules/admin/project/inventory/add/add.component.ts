@@ -176,7 +176,7 @@ if(expDateTime>currentDate){
     } else {
         // Gérer le cas où expDateTime n'est pas une instance de Date
         
-        console.log("nest pas instance de date ");
+        console.log("nest pas instance de date  time ");
     }
   
       // Envoi de la date formatée au serveur
