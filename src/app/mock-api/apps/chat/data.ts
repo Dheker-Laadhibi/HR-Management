@@ -469,7 +469,7 @@ export const contacts = [
         attachments: _attachments,
     },
     {
-        id         : '9d3f0e7f-dcbd-4e56-a5e8-87b8154e9edf',
+        id         : '83f07c96-7c1e-4340-b768-d83c9bbb1793',
         avatar     : 'assets/images/avatars/male-02.jpg',
         name       : 'Bernard Langley',
         about      : 'Hi there! I\'m using FuseChat.',

@@ -25,16 +25,9 @@
 
                     <!-- Title -->
                     <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">Candidats</div>
+                        <div class="text-4xl font-extrabold tracking-tight leading-none">Candidates</div>
                         <div class="ml-0.5 font-medium text-secondary">
-                            <ng-container *ngIf="contactsCount > 0">
-                                {{contactsCount}}
-                            </ng-container>
-                            {{contactsCount | i18nPlural: {
-                            '=0'   : 'No candidats',
-                            '=1'   : 'candidat',
-                            'other': 'candidat'
-                        } }}
+                        
                         </div>
                     </div>
 
@@ -53,53 +46,63 @@
                                     matInput
                                     [formControl]="searchInputControl"
                                     [autocomplete]="'off'"
-                                    [placeholder]="'Search candidats'">
+                                    [placeholder]="'Search users'">
                             </mat-form-field>
                         </div>
-                        <!-- Add contact button -->
                         <button
                             class="ml-4"
                             mat-flat-button
                             [color]="'primary'"
-                            (click)="createContact()">
+                            (click)="createCandidate()">
                             <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                            <span class="ml-2 mr-1">Add</span>
+                            <span class="ml-2 mr-1">Add Candidate</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Contacts list -->
                 <div class="relative">
-                    <ng-container *ngIf="contacts$ | async as contacts">
-                        <ng-container *ngIf="contacts.length; else noContacts">
-                            <ng-container *ngFor="let contact of contacts; let i = index; trackBy: trackByFn">
+                    <ng-container>
+                        <ng-container>
+                            <ng-container *ngFor="let candidate of candidats; let i = index; trackBy: trackByFn">
                                 <!-- Group -->
-                                <ng-container *ngIf="i === 0 || contact.name.charAt(0) !== contacts[i - 1].name.charAt(0)">
+                                <ng-container>
                                     <div class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                        {{contact.name.charAt(0)}}
                                     </div>
                                 </ng-container>
                                 <!-- Contact -->
                                 <a
                                     class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
-                                    [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedContact || selectedContact.id !== contact.id,
-                                                'bg-primary-50 dark:bg-hover': selectedContact && selectedContact.id === contact.id}"
-                                    [routerLink]="['./', contact.id]">
+                                    [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCandidate || selectedCandidate.id !== candidate.id,
+                                                'bg-primary-50 dark:bg-hover': selectedCandidate && selectedCandidate.id === candidate.id}"
 
+                                    [routerLink]="['./', candidate.id]">
+
+                                    <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
+                                        <ng-container *ngIf="candidate.avatar">
+                                            <img
+                                                class="object-cover w-full h-full"
+                                                [src]="candidate.avatar"
+                                                alt="candidate avatar"/>
+                                        </ng-container>
+                                        <ng-container *ngIf="!candidate.avatar">
+                                            <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                            </div>
+                                        </ng-container>
+                                    </div>
                                     <div class="min-w-0 ml-4">
-                                        <div class="font-medium leading-5 truncate">{{contact.name}}</div>
-                                        <div class="leading-5 truncate text-secondary">{{contact.title}}</div>
+                                        <div class="font-medium leading-5 truncate"></div>
+                                        <div class="leading-5 truncate text-secondary">{{candidate.lastname}} {{candidate.firstname}}</div>
+                                        <div class="leading-5 truncate text-secondary">{{candidate.email}}</div>
                                     </div>
                                 </a>
-
                             </ng-container>
-
                         </ng-container>
                     </ng-container>
 
                     <!-- No contacts -->
                     <ng-template #noContacts>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no candidats!</div>
+                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no Candidates!</div>
                     </ng-template>
 
                 </div>

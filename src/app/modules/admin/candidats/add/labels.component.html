@@ -1,0 +1,97 @@
+<div class="flex flex-col flex-auto h-100 w-200 min-w-80 p-2 md:p-4 ">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div class="text-2xl font-semibold">Add Candidate</div>
+        <button matDialogClose mat-icon-button>
+            <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+        </button>
+    </div>
+
+
+    <form class="mt-8 overflow-y-auto" [formGroup]="composeForm">
+        <!-- Name field -->
+        <div class="flex space-x-4">
+
+
+            <mat-form-field class="w-1/2">
+                <mat-label>First name</mat-label>
+                <input matInput [formControlName]="'firstname'">
+                <mat-error *ngIf="composeForm.get('firstname').hasError('minlength') || composeForm.get('firstname').hasError('maxlength') || composeForm.get('firstname').errors?.required">
+                    First name must be between 3 and 30 characters.
+                </mat-error>
+            </mat-form-field>
+          
+            <!-- Lastname field -->
+            <mat-form-field class="w-1/2" >
+                <mat-label>Last name</mat-label>
+                <input matInput  [formControlName]="'lastname'">
+                <mat-error *ngIf="composeForm.get('lastname').hasError('minlength') || composeForm.get('lastname').hasError('maxlength')">
+                    Last name must be between 3 and 30 characters.
+                </mat-error>
+            </mat-form-field>
+
+        </div>
+        
+        <div class="flex space-x-4">
+
+        <mat-form-field class="w-full">
+            <mat-label>Email</mat-label>
+            <input matInput [formControlName]="'email'">
+            <mat-error *ngIf="composeForm.get('email').hasError('required')">Email is required.</mat-error>
+            <mat-error *ngIf="composeForm.get('email').hasError('email')">Invalid email address.</mat-error>
+            <mat-error *ngIf="composeForm.get('email').hasError('maxlength')">Email must be at most 255 characters.</mat-error>
+        </mat-form-field>
+      
+        
+
+        <mat-form-field class="w-1/3">
+            <mat-label>Education level</mat-label>
+            <mat-select formControlName="education_level"  class="custom-select">
+                <mat-option value="Master of Computer Science (M1)">Master of Computer Science (M1)</mat-option>
+                <mat-option value="Bachelor of Computer Science">Bachelor of Computer Science</mat-option>
+                <mat-option value="Cyber Security">Cyber Security</mat-option>
+            </mat-select>
+        </mat-form-field>
+        </div>
+        <mat-form-field class="w-full">
+            <mat-label>Password</mat-label>
+            <input matInput [formControlName]="'password'">
+            <mat-error *ngIf="composeForm.get('password').hasError('required')">Password is required.</mat-error>
+            <mat-error *ngIf="composeForm.get('password').hasError('minlength')">Password must be at least 10 characters.</mat-error>
+            <mat-error *ngIf="composeForm.get('password').hasError('maxlength')">Password must be at most 255 characters.</mat-error>
+        </mat-form-field>
+
+        <!-- Company field -->
+        <mat-form-field class="w-full">
+            <mat-label>Address</mat-label>
+            <input matInput [formControlName]="'adress'">
+            <mat-error *ngIf="composeForm.get('adress').hasError('minlength') || composeForm.get('adress').hasError('maxlength')">
+                Address must be between 3 and 30 characters.
+            </mat-error>
+        </mat-form-field>
+
+           <!-- Company field -->
+        <mat-form-field class="w-full">
+            <mat-label>University</mat-label>
+            <input matInput [formControlName]="'university'">
+            <mat-error *ngIf="composeForm.get('university').hasError('minlength') || composeForm.get('university').hasError('maxlength')">
+                university must be between 3 and 30 characters.
+            </mat-error>
+        </mat-form-field>
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6">
+            <div class="flex items-center mt-4 sm:mt-0">
+        <!-- Submit button -->
+        <button class="ml-auto  mt-3  ml-5   mr-5 sm:ml-0" mat-flat-button [color]="'primary'" (click)="send()">
+            Submit to Add
+        </button>
+        <button
+        class="ml-auto mt-3  ml-10   mr-5  sm:ml-0"
+         mat-flat-button
+          [color]="'warn'"
+        (click)="onCancel()">
+        Discard
+       </button>
+            </div></div>
+    </form>
+</div>

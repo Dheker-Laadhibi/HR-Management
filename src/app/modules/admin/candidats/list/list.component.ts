@@ -1,5 +1,6 @@
+import { CandidateService } from './../../../../Services/candidate.service';
 import { AsyncPipe, DOCUMENT, I18nPluralPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {  ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,20 +10,25 @@ import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { ContactsService } from 'app/modules/admin/candidats/contacts.service';
-import { Contact, Country } from 'app/modules/admin/candidats/contacts.types';
+
 import { filter, fromEvent, Observable, Subject, switchMap, takeUntil } from 'rxjs';
+import { Contact, Country } from '../contacts.types';
+import { UserData } from 'app/Model/session';
+import { MatDialog } from '@angular/material/dialog';
+import { AddComponent } from '../add/labels.component';
 
 @Component({
     selector       : 'contacts-list',
     templateUrl    : './list.component.html',
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone     : true,
     imports        : [MatSidenavModule, RouterOutlet, NgIf, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, NgFor, NgClass, RouterLink, AsyncPipe, I18nPluralPipe],
 })
 export class ContactsListComponent implements OnInit, OnDestroy
 {
     @ViewChild('matDrawer', {static: true}) matDrawer: MatDrawer;
+
+ 
 
     contacts$: Observable<Contact[]>;
 
@@ -33,7 +39,12 @@ export class ContactsListComponent implements OnInit, OnDestroy
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedContact: Contact;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    userDataString = localStorage.getItem('userData');
+    userData: UserData = JSON.parse(this.userDataString);
+    CompanyId = this.userData[1].data.user.workCompanyId || '';
+   
+   
+    candidats    : any[];
     /**
      * Constructor
      */
@@ -44,6 +55,10 @@ export class ContactsListComponent implements OnInit, OnDestroy
         @Inject(DOCUMENT) private _document: any,
         private _router: Router,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
+        //private userService : UserService,
+        private _matDialog: MatDialog,
+        private router: Router,
+        private CandidateService:CandidateService,
     )
     {
     }
@@ -57,43 +72,10 @@ export class ContactsListComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        // Get the contacts
-        this.contacts$ = this._contactsService.contacts$;
-        this._contactsService.contacts$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contacts: Contact[]) =>
-            {
-                // Update the counts
-                this.contactsCount = contacts.length;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Get the contact
-        this._contactsService.contact$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contact: Contact) =>
-            {
-                // Update the selected contact
-                this.selectedContact = contact;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Get the countries
-        this._contactsService.countries$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((countries: Country[]) =>
-            {
-                // Update the countries
-                this.countries = countries;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
+        console.log("company ID ",this.CompanyId);
+        
+        this.fetchCandidates();
+       
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
             .pipe(
@@ -111,6 +93,7 @@ export class ContactsListComponent implements OnInit, OnDestroy
         {
             if ( !opened )
             {
+                console.log('clickedddddd');
                 // Remove the selected contact when drawer closed
                 this.selectedContact = null;
 
@@ -138,21 +121,12 @@ export class ContactsListComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Listen for shortcuts
-        fromEvent(this._document, 'keydown')
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                filter<KeyboardEvent>(event =>
-                    (event.ctrlKey === true || event.metaKey) // Ctrl or Cmd
-                    && (event.key === '/'), // '/'
-                ),
-            )
-            .subscribe(() =>
-            {
-                this.createContact();
-            });
+
     }
 
+    navigateToUserDetails(candidateId: string): void {
+        this.router.navigate(['user-details', candidateId]);
+    }
     /**
      * On destroy
      */
@@ -166,6 +140,21 @@ export class ContactsListComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+
+
+    fetchCandidates(): void {
+        console.log('Fetching users...');
+        this.CandidateService.getCandidats(this.CompanyId).subscribe(
+            response => {
+                console.log('candidat received :', response.data.items);
+                this.candidats = response.data.items;
+            },
+            error => {
+                console.error('Error fetching questions:', error);
+            }
+        );
+    } 
 
     /**
      * On backdrop clicked
@@ -182,17 +171,9 @@ export class ContactsListComponent implements OnInit, OnDestroy
     /**
      * Create contact
      */
-    createContact(): void
+    createCandidate(): void
     {
-        // Create the contact
-        this._contactsService.createContact().subscribe((newContact) =>
-        {
-            // Go to the new contact
-            this._router.navigate(['./', newContact.id], {relativeTo: this._activatedRoute});
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        });
+        this._matDialog.open(AddComponent, {autoFocus: false});
     }
 
     /**
