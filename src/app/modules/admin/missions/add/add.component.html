@@ -1,0 +1,98 @@
+<div class="flex flex-col flex-auto w-200 min-w-80 p-2 md:p-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <!-- Image -->
+        <img src="https://synergie-educative.org/wp-content/uploads/2023/04/Mission_0-768x533.png" alt="Mission Image" class="w-32 h-auto mr-4">
+
+        <!-- Title -->
+        <div class="text-2xl font-semibold ml-2 text-blue-800">Add a new Mission order</div>
+
+
+
+        <!-- Close button -->
+        <button matDialogClose mat-icon-button class="text-2xl">
+            <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+        </button>
+    </div>
+
+   
+  <form  class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto"
+        [formGroup]="composeForm"   >
+
+            <!-- Name field -->
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Mission object</mat-label>
+                <input
+                matInput
+                [formControlName]="'Object'">
+            </mat-form-field>
+
+            <!-- Email field -->
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Transport</mat-label>
+                <input
+                matInput [formControlName]="'transport'">
+            </mat-form-field>
+
+            <!-- Password field -->
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Adress client</mat-label>
+                <input
+                matInput [formControlName]="'adress'"  >
+            </mat-form-field>
+
+           
+
+            
+
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>description</mat-label>
+                <input
+                matInput [formControlName]="'description'">
+            </mat-form-field>
+             <!-- Gender field -->
+             
+
+        <!-- Expiry Date field -->
+        <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Expiry Date</mat-label>
+               <input
+              matInput [formControlName]="'end_date'" [matDatepicker]="end_date" formControlName="end_date">
+            <mat-datepicker-toggle matSuffix [for]="end_date"></mat-datepicker-toggle>
+            <mat-datepicker #end_date></mat-datepicker>
+            </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Start Date</mat-label>
+           <input
+          matInput [formControlName]="'start_date'" [matDatepicker]="start_date" formControlName="start_date">
+        <mat-datepicker-toggle matSuffix [for]="start_date"></mat-datepicker-toggle>
+        <mat-datepicker #start_date></mat-datepicker>
+        </mat-form-field>
+
+
+<div class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6">
+       <div class="flex items-center mt-4 sm:mt-0">
+        <!-- Discard -->
+           <button
+              class="ml-auto mt-3  ml-10   mr-5  sm:ml-0"
+               mat-flat-button
+                [color]="'warn'"
+              (click)="onCancel()">
+              Discard
+             </button>
+        <!-- Send -->
+          <!-- Submit button -->
+          <button class="ml-auto  mt-3  ml-5   mr-5 sm:ml-0"
+          mat-flat-button
+              [color]="'primary'"
+          (click)="send()">
+              <span>Add New Mission</span>
+          </button>
+
+    </div>
+    </div>
+
+        </form>
+    
+</div>

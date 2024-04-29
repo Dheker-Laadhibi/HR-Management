@@ -11,3 +11,16 @@ export interface UserData{
       }
   }
 }
+
+export interface CandidateData{
+  responseKey?: string,
+  data?: {
+      accessToken?: string,
+      Candidat?: {
+          ID?: string,
+          name?: string,
+          email?:string,
+          workCompanyId?: string
+      }
+  }
+}

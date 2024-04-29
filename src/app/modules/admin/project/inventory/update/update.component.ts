@@ -7,9 +7,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { debounceTime, filter, Observable, Subject, switchMap, takeUntil } from 'rxjs';
+
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProjectsService } from './../../../../../Services/projects.service';
 import { UserData } from 'app/Model/session';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 @Component({
     selector       : 'notes-labels',
     templateUrl    : './update.component.html',

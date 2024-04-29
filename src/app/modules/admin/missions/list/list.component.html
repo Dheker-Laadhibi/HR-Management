@@ -1,168 +1,145 @@
-<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
 
-    <mat-drawer-container
-        class="flex-auto h-full bg-card dark:bg-transparent"
-        (backdropClick)="onBackdropClicked()">
+    <!-- Header -->
+    <div class="relative flex flex-col h-10 sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Loader -->
+        <div
+            class="absolute inset-x-0 bottom-0"
+            >
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Missions</div>
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field
+                class="fuse-mat-dense fuse-mat-rounded min-w-64"
+                [subscriptSizing]="'dynamic'">
+                <mat-icon
+                    class="icon-size-5"
+                    matPrefix
+                    [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+                <input
+                    matInput
+                  
+                    [autocomplete]="'off'"
+                    [placeholder]="'Search projects'">
+            </mat-form-field>
+          
+            <button
+                class="ml-4"
+                mat-flat-button
+                [color]="'primary'"
+                (click)="openAddDialog()">
+                <span class="ml-2 mr-1">Add a new mission</span>
+            </button>
+        </div>
+    </div>
 
-        <!-- Drawer -->
-        <mat-drawer
-            class="w-full sm:w-128 dark:bg-gray-900"
-            [mode]="drawerMode"
-            [opened]="false"
-            [position]="'end'"
-            [disableClose]="true"
-            #matDrawer>
-            <router-outlet></router-outlet>
-        </mat-drawer>
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
 
-        <mat-drawer-content class="flex flex-col">
+        <!-- Products list -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden">
+            <ng-container >
+                <ng-container>
+                    <div class="grid">
+                        <!-- Header -->
+                        <div
+                            class="inventory-grid z-10 sticky top-0 grid gap-30 py-4 h-10 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
 
-            <!-- Main -->
-            <div class="flex flex-col flex-auto">
-
-                <!-- Header -->
-                <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between py-8 px-6 md:px-8">
-                    <!-- Title -->
-                    <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">Missions</div>
-                        <div class="ml-0.5 font-medium text-secondary">
-                            <span *ngIf="tasksCount.incomplete === 0">All tasks completed!</span>
-                            <span *ngIf="tasksCount.incomplete !== 0">{{tasksCount.incomplete}} Missions</span>
-                        </div>
-                    </div>
-                    <!-- Actions -->
-                    <div class="mt-4 sm:mt-0">
-
-                        <!-- Add task button -->
-                        <button
-                            class="ml-3"
-                            mat-flat-button
-                            [color]="'primary'"
-                            (click)="createTask('task')"
-                            [matTooltip]="'Shortcut: Ctrl + /'">
-                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                            <span class="ml-2 mr-1">Add Mission</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Tasks list -->
-                <ng-container *ngIf="tasks && tasks.length > 0; else noTasks">
-                    <div
-                        class="divide-y"
-                        cdkDropList
-                        [cdkDropListData]="tasks"
-                        (cdkDropListDropped)="dropped($event)">
-
-                        <!-- Task -->
-                        <ng-container *ngFor="let task of tasks; let first = first; trackBy: trackByFn">
+                            <div    class="hidden sm:block" 
+                             [mat-sort-header]="'name'">mission'sobject</div>
                             <div
-                                [id]="'task-' + task.id"
-                                class="group w-full select-none hover:bg-gray-100 dark:hover:bg-hover"
-                                [ngClass]="{'h-12 text-lg font-semibold bg-gray-50 dark:bg-transparent': task.type === 'section',
-                                            'h-16': task.type === 'task',
-                                            'text-hint': task.completed}"
-                                [class.border-t]="first"
-                                cdkDrag
-                                [cdkDragLockAxis]="'y'">
+                                class="hidden sm:block"
+                                [mat-sort-header]="'price'">
+                                Description
+                            </div>
+                            <div
+                                class="hidden lg:block"
+                                [mat-sort-header]="'stock'">
+                                Start date 
+                            </div>
+                            <div
+                                class="hidden lg:block"
+                                [mat-sort-header]="'active'">
+                                Adress_client
+                            </div>
+                            <div class="hidden sm:block">Details</div>
+                        </div>
+                        <!-- Rows -->
+                        <ng-container >
+                            <ng-container *ngFor="let mission of missions">
+ 
+                                <a class="inventory-row"   >
 
-                                <!-- Drag preview -->
-                                <div
-                                    class="flex flex-0 w-0 h-0"
-                                    *cdkDragPreview></div>
+                                <div class="inventory-grid grid items-center h-12 gap-30 py-3 px-6 md:px-8 border-b">
 
-                                <!-- Task content -->
-                                <div class="relative flex items-center h-full pl-10">
-
-                                    <!-- Selected indicator -->
-                                    <ng-container *ngIf="selectedTask && selectedTask.id === task.id">
-                                        <div class="z-10 absolute -top-px right-0 -bottom-px flex flex-0 w-1 bg-primary"></div>
-                                    </ng-container>
-
-                                    <!-- Drag handle -->
-                                    <div
-                                        class="md:hidden absolute flex items-center justify-center inset-y-0 left-0 w-8 cursor-move md:group-hover:flex"
-                                        cdkDragHandle>
-                                        <mat-icon
-                                            class="icon-size-5 text-hint"
-                                            [svgIcon]="'heroicons_solid:bars-3'"></mat-icon>
+                                        <!-- Name -->
+                                    <div class="flex"(click)="openInfosDialog(mission)" >
+                                        {{mission.Object}}
                                     </div>
 
-                                    <!-- Complete task button -->
-                                    <button
-                                        class="mr-2 -ml-2.5 leading-none"
-                                        *ngIf="task.type === 'task'"
-                                        (click)="toggleCompleted(task)"
-                                        mat-icon-button>
-                                        <ng-container *ngIf="task.completed">
-                                            <mat-icon
-                                                class="text-primary"
-                                                [svgIcon]="'heroicons_outline:check-circle'"></mat-icon>
-                                        </ng-container>
-                                        <ng-container *ngIf="!task.completed">
-                                            <mat-icon
-                                                class="text-hint"
-                                                [svgIcon]="'heroicons_outline:check-circle'"></mat-icon>
-                                        </ng-container>
-                                    </button>
+                                    <!-- Price -->
+                                    <div class="hidden sm:block"(click)="openInfosDialog(mission)" >
+                                        {{mission.desciption}}  
+                                    </div>
 
-                                    <!-- Task link -->
-                                    <a
-                                        class="flex flex-auto items-center min-w-0 h-full pr-7"
-                                        [routerLink]="[task.id]">
-                                        <!-- Title & Placeholder -->
-                                        <div class="flex-auto mr-2 truncate">
-                                            <ng-container *ngIf="task.title">
-                                                <span>{{task.title}}</span>
-                                            </ng-container>
-                                            <ng-container *ngIf="!task.title">
-                                                <span class="select-none text-hint">{{task.type | titlecase}} title</span>
-                                            </ng-container>
-                                        </div>
-                                        <!-- Priority -->
-                                        <ng-container *ngIf="task.type === 'task'">
-                                            <div class="w-4 h-4 mr-3">
-                                                <!-- Low -->
-                                                <mat-icon
-                                                    class="icon-size-4 text-green-600 dark:text-green-400"
-                                                    *ngIf="task.priority === 0"
-                                                    [svgIcon]="'heroicons_mini:arrow-long-down'"
-                                                    [title]="'Low'"></mat-icon>
-                                                <!-- High -->
-                                                <mat-icon
-                                                    class="icon-size-4 text-red-600 dark:text-red-400"
-                                                    *ngIf="task.priority === 2"
-                                                    [svgIcon]="'heroicons_mini:arrow-long-up'"
-                                                    [title]="'High'"></mat-icon>
-                                            </div>
-                                        </ng-container>
-                                        <!-- Due date -->
-                                        <div
-                                            class="text-sm whitespace-nowrap text-secondary"
-                                            *ngIf="task.type === 'task'">
-                                            {{task.dueDate | date:'LLL dd'}}
-                                        </div>
-                                    </a>
+                                    <!-- Stock -->
+                                    <div class="hidden lg:flex items-center">
+                                        <div class="min-w-4" (click)="openInfosDialog(mission)" >{{mission.StartDate}}</div>
+                                    </div>
+
+                                    <!-- Stock -->
+                                    <div class="hidden lg:flex items-center">
+                                        <div class="min-w-4" (click)="openInfosDialog(mission)" >   {{mission.Transport}}</div>
+                                    </div>
+
+                                    <!-- Details button -->
+                                    <div class="inventory-grid grid items-center gap-10  h-12 gap-10 py-3 px-6 md:px-8">
+                                    <div>
+                                        <button
+                                            class="-ml-4 w-20 min-h-5 h-5 px-2 leading-6"
+                                            mat-flat-button
+                                            [color]="'primary'"
+                                            (click)="openEditLabelsDialog(mission.id)">
+                                            Update
+                                        </button>
+
+                                    </div>
+
+                                    <div>
+                                        <button
+                                            class="w-20 min-h-5 h-5 px-2 -ml-4 leading-6"
+                                            mat-button
+                                            [color]="'warn'"
+                                            (click)="deleteRequest(mission.id)"
+                                            >
+ 
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                                </div>
+                            </a>
+                               
+
+                            </ng-container>
                         </ng-container>
                     </div>
-
                 </ng-container>
+            </ng-container>
 
-                <ng-template #noTasks>
-                    <div class="flex flex-auto flex-col items-center justify-center bg-gray-100 dark:bg-transparent">
-                        <mat-icon
-                            class="icon-size-24"
-                            [svgIcon]="'heroicons_outline:clipboard-document-list'"></mat-icon>
-                        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Add a mission to start planning!</div>
-                    </div>
-                </ng-template>
+           
+            <ng-template #noProducts>
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no products!</div>
+            </ng-template>
 
-            </div>
+        </div>
 
-        </mat-drawer-content>
-
-    </mat-drawer-container>
+    </div>
 
 </div>

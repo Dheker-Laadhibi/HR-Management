@@ -1,51 +1,91 @@
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDragPreview, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { DatePipe, DOCUMENT, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AsyncPipe, CurrencyPipe, DatePipe, DOCUMENT, NgClass, NgFor, NgIf, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule, MatRippleModule } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { UserData } from 'app/Model/session';
+import { MissionOrdersService } from 'app/Services/mission-orders.service';
 import { TasksService } from 'app/modules/admin/missions/missions.service';
 import { Tag, Task } from 'app/modules/admin/missions/missions.types';
 import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
+import { AddComponent } from '../add/add.component';
+
+import { UpdateComponent } from '../update/update.component';
 
 @Component({
     selector       : 'tasks-list',
     templateUrl    : './list.component.html',
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    styles         : [
+        /* language=SCSS */
+        `
+            .inventory-grid {
+                grid-template-columns: 48px auto 40px;
+
+                @screen sm {
+                    grid-template-columns: 48px auto 112px 72px;
+                }
+
+                @screen md {
+                    grid-template-columns: 48px 112px auto 112px 72px;
+                }
+
+                @screen lg {
+                    grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
+                }
+            }
+        `,
+    ],
     standalone     : true,
-    imports        : [MatSidenavModule, RouterOutlet, NgIf, MatButtonModule, MatTooltipModule, MatIconModule, CdkDropList, NgFor, CdkDrag, NgClass, CdkDragPreview, CdkDragHandle, RouterLink, TitleCasePipe, DatePipe],
+    imports        : [NgIf, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
 })
 export class TasksListComponent implements OnInit, OnDestroy
 {
     @ViewChild('matDrawer', {static: true}) matDrawer: MatDrawer;
 
     drawerMode: 'side' | 'over';
-    selectedTask: Task;
-    tags: Tag[];
-    tasks: Task[];
-    tasksCount: any = {
-        completed : 0,
-        incomplete: 0,
-        total     : 0,
+  selectedMission: any;
+  tags: Tag[];
+  missionID:string
+  missions: any[];
+  missionsCount: any = {
+    completed: 0,
+    incomplete: 0,
+    total: 0,
     };
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
+    userDataString = localStorage.getItem('userData');
+    userData: UserData = JSON.parse(this.userDataString);
+    CompanyId = this.userData[1].data.user.workCompanyId || '';
+    userId = this.userData[1].data.user.ID|| '';  
     /**
      * Constructor
      */
     constructor(
-        private _activatedRoute: ActivatedRoute,
+      
         private _changeDetectorRef: ChangeDetectorRef,
         @Inject(DOCUMENT) private _document: any,
-        private _router: Router,
-        private _tasksService: TasksService,
-        private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fuseNavigationService: FuseNavigationService,
+
+        private _fuseConfirmtionService: FuseConfirmationService,
+        private _matDialog: MatDialog,
+        private _missionService: MissionOrdersService 
     )
     {
     }
@@ -57,102 +97,113 @@ export class TasksListComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
-        // Get the tags
-        this._tasksService.tags$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((tags: Tag[]) =>
-            {
-                this.tags = tags;
+    ngOnInit(): void {
+         // Chargez les missions initiales
+    this.loadMissions();
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
 
-        // Get the tasks
-        this._tasksService.tasks$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((tasks: Task[]) =>
-            {
-                this.tasks = tasks;
-
-                // Update the counts
-                this.tasksCount.total = this.tasks.filter(task => task.type === 'task').length;
-                this.tasksCount.completed = this.tasks.filter(task => task.type === 'task' && task.completed).length;
-                this.tasksCount.incomplete = this.tasksCount.total - this.tasksCount.completed;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-
-                // Update the count on the navigation
-                setTimeout(() =>
-                {
-                    // Get the component -> navigation data -> item
-                    const mainNavigationComponent = this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>('mainNavigation');
-
-                    // If the main navigation component exists...
-                    if ( mainNavigationComponent )
-                    {
-                        const mainNavigation = mainNavigationComponent.navigation;
-                        const menuItem = this._fuseNavigationService.getItem('apps.tasks', mainNavigation);
-
-                        // Update the subtitle of the item
-                        menuItem.subtitle = this.tasksCount.incomplete + ' remaining tasks';
-
-                        // Refresh the navigation
-                        mainNavigationComponent.refresh();
-                    }
-                });
-            });
-
-        // Get the task
-        this._tasksService.task$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((task: Task) =>
-            {
-                this.selectedTask = task;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Subscribe to media query change
-        this._fuseMediaWatcherService.onMediaQueryChange$('(min-width: 1440px)')
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((state) =>
-            {
-                // Calculate the drawer mode
-                this.drawerMode = state.matches ? 'side' : 'over';
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Listen for shortcuts
-        fromEvent(this._document, 'keydown')
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                filter<KeyboardEvent>(event =>
-                    (event.ctrlKey === true || event.metaKey) // Ctrl or Cmd
-                    && (event.key === '/' || event.key === '.'), // '/' or '.' key
-                ),
-            )
-            .subscribe((event: KeyboardEvent) =>
-            {
-                // If the '/' pressed
-                if ( event.key === '/' )
-                {
-                    this.createTask('task');
-                }
-
-                // If the '.' pressed
-                if ( event.key === '.' )
-                {
-                    this.createTask('section');
-                }
-            });
+    
     }
+  
+    deleteRequest(missionId: string): void {
+        const confirmation = this._fuseConfirmtionService.open({
+            title: 'Delete role',
+            message: 'Are you sure you want to remove this role? This action cannot be undone!',
+            actions: {
+                confirm: {
+                    show: true,
+                    label: 'Delete',
+                    color: 'warn'
+                },
+                cancel: {
+                    show: true,
+                    label: 'Cancel'
+                }
+            }
+        });
+
+        confirmation.afterClosed().subscribe(result => {
+            if (result === 'confirmed') {
+                if (missionId) {
+                    this.missionID=missionId
+                    this._missionService.deleteMission(this.CompanyId, this.missionID).subscribe(
+                        response => {
+                            console.log('Loan request deleted successfully:', response);
+                            this.loadMissions();
+                            this.missionID = null;
+                        },
+                        error => {
+                            console.error('Error deleting loan request:', error);
+                        }
+                    );
+                }
+            }
+        });
+    }
+
+
+
+   
+     openEditLabelsDialog(mission: any): void
+     {
+        console.log('Updating project with ID:', mission);
+        this._matDialog.open(UpdateComponent, {
+            autoFocus: false,
+            data: {mission}
+         
+        });
+        
+     }
+     //for add 
+     openAddDialog() {
+        this._matDialog.open(AddComponent, {
+            autoFocus: false,
+            panelClass: 'custom-dialog'
+        });
+    }
+
+/* open dialog for dlt*/ 
+   
+
+
+
+
+
+    
+    loadMissions(): void {
+        console.log('Fetching  projects...');
+        this._missionService.getAllMissions(this.CompanyId).subscribe(
+            response => {
+                console.log('Data received:', response.data.items);
+                this.missions = response.data.items;
+                console.log("missions ",this.missions);
+               
+            },  
+            error => {
+                console.error('Error fetching missions:', error);
+            }
+        );
+    }
+
+
+
+
+
+    getOneMission(id: string): void {
+        // Récupérez une seule mission à partir du serveur
+        this._missionService.getOneMission(this.CompanyId, id).subscribe((mission) => {
+          // Mettez à jour la mission sélectionnée
+          this.selectedMission = mission;
+          // Marquez pour le changement de détection
+          this._changeDetectorRef.markForCheck();
+        });
+      }
+
+
+
+
+
+
 
     /**
      * On destroy
@@ -164,83 +215,13 @@ export class TasksListComponent implements OnInit, OnDestroy
         this._unsubscribeAll.complete();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+   
 
-    /**
-     * On backdrop clicked
-     */
-    onBackdropClicked(): void
-    {
-        // Go back to the list
-        this._router.navigate(['./'], {relativeTo: this._activatedRoute});
+      }
 
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
 
-    /**
-     * Create task
-     *
-     * @param type
-     */
-    createTask(type: 'task' | 'section'): void
-    {
-        // Create the task
-        this._tasksService.createTask(type).subscribe((newTask) =>
-        {
-            // Go to the new task
-            this._router.navigate(['./', newTask.id], {relativeTo: this._activatedRoute});
+   
+  
 
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        });
-    }
+  
 
-    /**
-     * Toggle the completed status
-     * of the given task
-     *
-     * @param task
-     */
-    toggleCompleted(task: Task): void
-    {
-        // Toggle the completed status
-        task.completed = !task.completed;
-
-        // Update the task on the server
-        this._tasksService.updateTask(task.id, task).subscribe();
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Task dropped
-     *
-     * @param event
-     */
-    dropped(event: CdkDragDrop<Task[]>): void
-    {
-        // Move the item in the array
-        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-
-        // Save the new order
-        this._tasksService.updateTasksOrders(event.container.data).subscribe();
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any
-    {
-        return item.id || index;
-    }
-}

@@ -1,49 +1,84 @@
+import { InternService } from './../../../../Services/intern.service';
 import { AsyncPipe, DOCUMENT, I18nPluralPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {  ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { UserData } from 'app/Model/session';
 import { ContactsService } from 'app/modules/admin/interns/contacts.service';
-import { Contact, Country } from 'app/modules/admin/interns/contacts.types';
+import { Contact, Country, Tag } from 'app/modules/admin/interns/contacts.types';
 import { filter, fromEvent, Observable, Subject, switchMap, takeUntil } from 'rxjs';
+import { ContactsDetailsComponent } from '../details/details.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSortModule } from '@angular/material/sort';
+import { AddComponent } from '../add/add.component';
 
 @Component({
     selector       : 'contacts-list',
     templateUrl    : './list.component.html',
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    styles         : [
+        /* language=SCSS */
+        `
+            .inventory-grid {
+                grid-template-columns: 48px auto 40px;
+
+                @screen sm {
+                    grid-template-columns: 48px auto 112px 72px;
+                }
+
+                @screen md {
+                    grid-template-columns: 48px 112px auto 112px 72px;
+                }
+
+                @screen lg {
+                    grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
+                }
+            }
+        `,
+    ],
     standalone     : true,
-    imports        : [MatSidenavModule, RouterOutlet, NgIf, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, NgFor, NgClass, RouterLink, AsyncPipe, I18nPluralPipe],
+    imports        : [MatSidenavModule,  MatProgressBarModule,
+        MatSortModule,RouterOutlet, NgIf, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, NgFor, NgClass, RouterLink, AsyncPipe, I18nPluralPipe],
 })
-export class ContactsListComponent implements OnInit, OnDestroy
+export class ContactsListComponent  implements OnInit, OnDestroy
 {
     @ViewChild('matDrawer', {static: true}) matDrawer: MatDrawer;
 
-    contacts$: Observable<Contact[]>;
-
-    contactsCount: number = 0;
-    contactsTableColumns: string[] = ['name', 'email', 'phoneNumber', 'job'];
-    countries: Country[];
     drawerMode: 'side' | 'over';
-    searchInputControl: UntypedFormControl = new UntypedFormControl();
-    selectedContact: Contact;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
+  selectedMission: any;
+  tags: Tag[];
+  internID:string
+ interns: any[];
+  missionsCount: any = {
+    completed: 0,
+    incomplete: 0,
+    total: 0,
+    };
 
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
+    userDataString = localStorage.getItem('userData');
+    userData: UserData = JSON.parse(this.userDataString);
+    CompanyId = this.userData[1].data.user.workCompanyId || '';
+    userId = this.userData[1].data.user.ID|| '';  
     /**
      * Constructor
      */
     constructor(
-        private _activatedRoute: ActivatedRoute,
+      
         private _changeDetectorRef: ChangeDetectorRef,
-        private _contactsService: ContactsService,
         @Inject(DOCUMENT) private _document: any,
-        private _router: Router,
-        private _fuseMediaWatcherService: FuseMediaWatcherService,
+
+        private _fuseConfirmtionService: FuseConfirmationService,
+        private _matDialog: MatDialog,
+        private InternService: InternService     
     )
     {
     }
@@ -55,103 +90,116 @@ export class ContactsListComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
-        // Get the contacts
-        this.contacts$ = this._contactsService.contacts$;
-        this._contactsService.contacts$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contacts: Contact[]) =>
-            {
-                // Update the counts
-                this.contactsCount = contacts.length;
+    ngOnInit(): void {
+         // Chargez les missions initiales
+    this.loadInterns();
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
 
-        // Get the contact
-        this._contactsService.contact$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contact: Contact) =>
-            {
-                // Update the selected contact
-                this.selectedContact = contact;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Get the countries
-        this._contactsService.countries$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((countries: Country[]) =>
-            {
-                // Update the countries
-                this.countries = countries;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Subscribe to search input field value changes
-        this.searchInputControl.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                switchMap(query =>
-
-                    // Search
-                    this._contactsService.searchContacts(query),
-                ),
-            )
-            .subscribe();
-
-        // Subscribe to MatDrawer opened change
-        this.matDrawer.openedChange.subscribe((opened) =>
-        {
-            if ( !opened )
-            {
-                // Remove the selected contact when drawer closed
-                this.selectedContact = null;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
+    
+    }
+  
+    deleteIntern(internId: string): void {
+        const confirmation = this._fuseConfirmtionService.open({
+            title: 'Delete Intern',
+            message: 'Are you sure you want to remove this Intern? This action cannot be undone!',
+            actions: {
+                confirm: {
+                    show: true,
+                    label: 'Delete',
+                    color: 'warn'
+                },
+                cancel: {
+                    show: true,
+                    label: 'Cancel'
+                }
             }
         });
 
-        // Subscribe to media changes
-        this._fuseMediaWatcherService.onMediaChange$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) =>
-            {
-                // Set the drawerMode if the given breakpoint is active
-                if ( matchingAliases.includes('lg') )
-                {
-                    this.drawerMode = 'side';
+        confirmation.afterClosed().subscribe(result => {
+            if (result === 'confirmed') {
+                if (internId) {
+                    this.internID=internId
+                    this.InternService.deleteIntern(this.CompanyId,this.internID).subscribe(
+                        response => {
+                            console.log('intern  deleted successfully:', response);
+                            this.loadInterns();
+                            this.internID = null;
+                        },
+                        error => {
+                            console.error('Error deleting intern  :', error);
+                        }
+                    );
                 }
-                else
-                {
-                    this.drawerMode = 'over';
-                }
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Listen for shortcuts
-        fromEvent(this._document, 'keydown')
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                filter<KeyboardEvent>(event =>
-                    (event.ctrlKey === true || event.metaKey) // Ctrl or Cmd
-                    && (event.key === '/'), // '/'
-                ),
-            )
-            .subscribe(() =>
-            {
-                this.createContact();
-            });
+            }
+        });
     }
+
+    openInfosDialog(intern: any): void
+    {
+        const dialogRef = this._matDialog.open(ContactsDetailsComponent, {
+            autoFocus: false,
+            data: { intern }
+          });
+        
+          dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+          });
+    }
+
+   
+     openEditLabelsDialog(mission: any): void
+     {
+        console.log('Updating project with ID:', mission);
+        this._matDialog.open(ContactsDetailsComponent, {
+            autoFocus: false,
+            data: {mission}
+         
+        });
+        
+     }
+     //for add 
+     openAddDialog() {
+        this._matDialog.open(AddComponent, {
+            autoFocus: false,
+            panelClass: 'custom-dialog'
+        });
+    }
+
+/* open dialog for dlt*/ 
+   
+
+
+page=1;
+limit=10;
+
+
+    
+    loadInterns(): void {
+        console.log('Fetching  interns...');
+        this.InternService.getAllInterns(this.CompanyId,this.page,this.limit).subscribe(
+            response => {
+                console.log('Data received:', response.data.items);
+                this.interns = response.data.items;
+                console.log("interns ",this.interns);
+               
+            },  
+            error => {
+                console.error('Error fetching interns:', error);
+            }
+        );
+    }
+
+
+
+
+
+   
+
+
+
+
+
+
 
     /**
      * On destroy
@@ -163,46 +211,18 @@ export class ContactsListComponent implements OnInit, OnDestroy
         this._unsubscribeAll.complete();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+   
 
-    /**
-     * On backdrop clicked
-     */
-    onBackdropClicked(): void
-    {
-        // Go back to the list
-        this._router.navigate(['./'], {relativeTo: this._activatedRoute});
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Create contact
-     */
-    createContact(): void
-    {
-        // Create the contact
-        this._contactsService.createContact().subscribe((newContact) =>
-        {
-            // Go to the new contact
-            this._router.navigate(['./', newContact.id], {relativeTo: this._activatedRoute});
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        });
-    }
-
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any
-    {
-        return item.id || index;
-    }
 }
+
+
+   
+  
+
+  
+
+
+
+    
+   
+

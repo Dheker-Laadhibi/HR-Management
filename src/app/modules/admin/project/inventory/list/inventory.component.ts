@@ -98,6 +98,7 @@ export class InventoryListComponent implements OnInit
 
            
         }
+        
     openInfosDialog(project: any): void
     {
         const dialogRef = this._matDialog.open(NotesLabelsComponent, {

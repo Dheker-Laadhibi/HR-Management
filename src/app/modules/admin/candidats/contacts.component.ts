@@ -5,7 +5,6 @@ import { RouterOutlet } from '@angular/router';
     selector       : 'contacts',
     templateUrl    : './contacts.component.html',
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone     : true,
     imports        : [RouterOutlet],
 })

@@ -42,20 +42,20 @@ export class CandidateService {
     return this.http.post<CondidatIn>(`${this.apiUrl}/candidats/${Companyid}`, Candidat , { headers: this.headers });
   }
 
-  getCandidats(Companyid: string): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${this.apiUrl}/candidats/${Companyid}`, { headers: this.headers });
+  getCandidats(Companyid: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/candidats/${Companyid}`, { headers: this.headers });
   }
 
   getCandidat
-  (Companyid: string,id: string): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${this.apiUrl}/candidats/${Companyid}/${id}`, { headers: this.headers });
+  (Companyid: string,id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/candidats/${Companyid}/${id}`, { headers: this.headers });
   }
 
-  updateUser(Companyid: string,id: string, candidat: CondidatIn): Observable<CondidatIn> {
+  updateCandidat(Companyid: string,id: string, candidat: CondidatIn): Observable<CondidatIn> {
     return this.http.put<CondidatIn>(`${this.apiUrl}/candidats/${Companyid}/${id}`, candidat, { headers: this.headers });
   }
 
-  deleteUser(Companyid: string,id: string): Observable<any> {
+  deleteCandidat(Companyid: string,id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/candidats/${Companyid}/${id}`, { headers: this.headers });
   }
 

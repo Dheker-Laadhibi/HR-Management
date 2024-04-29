@@ -1,26 +1,33 @@
 <div class="flex flex-col flex-auto w-200 min-w-80 p-2 md:p-4">
     <!-- Header -->
     <div class="flex items-center justify-between">
-        <div class="text-2xl font-semibold">Add</div>
+        <div class="text-2xl font-semibold"></div>
         <button matDialogClose mat-icon-button>
             <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
         </button>
     </div>
 
-    <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden">
-        <form class="mt-8">
+    <form
+    class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto"
+    [formGroup]="composeForm">
 
-            <!-- Name field -->
-            <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Name</mat-label>
-                <input matInput>
-            </mat-form-field>
+    <mat-form-field>
+        <mat-label>Company Name</mat-label>
+        <input
+            matInput
+            [formControlName]="'name'">
+    </mat-form-field>
 
-            <!-- Submit button -->
-            <button class="fuse-mat-button w-full mt-1" mat-flat-button color="primary">
-                <span>Update</span>
+          
+
+            <button
+            class="fuse-mat-button w-full mt-1"
+            mat-flat-button
+                [color]="'primary'"
+                (click)="send()">
+                Add role
             </button>
 
         </form>
     </div>
-</div>
+

@@ -1,0 +1,61 @@
+<div class="flex flex-col flex-auto w-200 min-w-80 p-2 md:p-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div class="text-2xl font-semibold">Update Infos</div>
+        <button matDialogClose mat-icon-button>
+            <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+        </button>
+    </div>
+
+    <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+        <form class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto"
+        [formGroup]="composeForm" >
+  <!-- Name field -->
+    <!-- Email field -->
+    <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Transport</mat-label>
+        <input
+        matInput [formControlName]="'transport'">
+    </mat-form-field>
+
+ <!-- Name field -->
+ <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Mission object</mat-label>
+    <input
+    matInput
+    [formControlName]="'Object'">
+</mat-form-field>
+
+<mat-form-field appearance="outline" class="w-full">
+    <mat-label>description</mat-label>
+    <input
+    matInput [formControlName]="'description'">
+</mat-form-field>
+ <!-- Gender field -->
+
+    
+
+<div class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6">
+    <div class="flex items-center mt-4 sm:mt-0">
+     <!-- Discard -->
+        <button
+           class="ml-auto mt-3  ml-10   mr-5  sm:ml-0"
+            mat-flat-button
+             [color]="'warn'"
+           (click)="onCancel()">
+           Discard
+          </button>
+     <!-- Send -->
+       <!-- Submit button -->
+       <button class="ml-auto  mt-3  ml-5   mr-5 sm:ml-0"
+       mat-flat-button
+           [color]="'primary'"
+       (click)="send()">
+           <span>Update the specified  Project</span>
+       </button>
+
+      </div>
+     </div>
+        </form>
+    
+</div>

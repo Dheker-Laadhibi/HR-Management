@@ -1,103 +1,163 @@
-<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
 
-    <mat-drawer-container
-        class="flex-auto h-full bg-card dark:bg-transparent"
-        (backdropClick)="onBackdropClicked()">
+    <!-- Header -->
+    <div class="relative flex flex-col h-10 sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Loader -->
+        <div
+            class="absolute inset-x-0 bottom-0"
+            >
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Interns</div>
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field
+                class="fuse-mat-dense fuse-mat-rounded min-w-64"
+                [subscriptSizing]="'dynamic'">
+                <mat-icon
+                    class="icon-size-5"
+                    matPrefix
+                    [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+                <input
+                    matInput
+                  
+                    [autocomplete]="'off'"
+                    [placeholder]="'Search projects'">
+            </mat-form-field>
+          
+            <button
+                class="ml-4"
+                mat-flat-button
+                [color]="'primary'"
+                (click)="openAddDialog()">
+                <span class="ml-2 mr-1">Add a new intern</span>
+            </button>
+        </div>
+    </div>
 
-        <!-- Drawer -->
-        <mat-drawer
-            class="w-full md:w-160 dark:bg-gray-900"
-            [mode]="drawerMode"
-            [opened]="false"
-            [position]="'end'"
-            [disableClose]="true"
-            #matDrawer>
-            <router-outlet></router-outlet>
-        </mat-drawer>
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
 
-        <mat-drawer-content class="flex flex-col">
+        <!-- Products list -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden">
+            <ng-container >
+                <ng-container>
+                    <div class="grid">
+                        <!-- Header -->
+                        <div
+                            class="inventory-grid z-10 sticky top-0 grid gap-30 py-4 h-10 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
 
-            <!-- Main -->
-            <div class="flex-auto">
+                            <div    class="hidden sm:block" 
+                             [mat-sort-header]="'name'">
+                             firstname</div>
+                            <div
+                                class="hidden sm:block"
+                                [mat-sort-header]="'price'">
+                               lastname
+                            </div>
+                            <div
+                                class="hidden lg:block"
+                                [mat-sort-header]="'stock'">
+                               
+                               university
 
-                <!-- Header -->
-                <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b">
+                            </div>
+                            <div
+                                class="hidden lg:block"
+                                [mat-sort-header]="'active'">
+                                educationLevel
+                            </div>
 
-                    <!-- Title -->
-                    <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">Interns</div>
-                        <div class="ml-0.5 font-medium text-secondary">
-                            <ng-container *ngIf="contactsCount > 0">
-                                {{contactsCount}}
-                            </ng-container>
-                            {{contactsCount | i18nPlural: {
-                            '=0'   : 'No interns',
-                            '=1'   : 'interns',
-                            'other': 'interns'
-                        } }}
+                            <div
+                            class="hidden lg:block"
+                            [mat-sort-header]="'email'">
+                            email
                         </div>
-                    </div>
 
-                    <!-- Main actions -->
-                    <div class="flex items-center mt-4 sm:mt-0 md:mt-4">
-                        <!-- Search -->
-                        <div class="flex-auto">
-                            <mat-form-field
-                                class="fuse-mat-dense fuse-mat-rounded w-full min-w-50"
-                                subscriptSizing="dynamic">
-                                <mat-icon
-                                    class="icon-size-5"
-                                    matPrefix
-                                    [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
-                                <input
-                                    matInput
-                                    [formControl]="searchInputControl"
-                                    [autocomplete]="'off'"
-                                    [placeholder]="'Search interns'">
-                            </mat-form-field>
+
+                            <div class="hidden lg:block"  [mat-sort-header]="'Details'">Details</div>
                         </div>
+                        <!-- Rows -->
+                        <ng-container >
+                            <ng-container *ngFor="let intern of interns">
+ 
+                                <a class="inventory-row"   >
 
-                    </div>
-                </div>
+                                <div class="inventory-grid grid items-center h-12 gap-30 py-3 px-6 md:px-8 border-b">
 
-                <!-- Contacts list -->
-                <div class="relative">
-                    <ng-container *ngIf="contacts$ | async as contacts">
-                        <ng-container *ngIf="contacts.length; else noContacts">
-                            <ng-container *ngFor="let contact of contacts; let i = index; trackBy: trackByFn">
-                                <!-- Group -->
-                                <ng-container *ngIf="i === 0 || contact.name.charAt(0) !== contacts[i - 1].name.charAt(0)">
-                                    <div class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                        {{contact.name.charAt(0)}}
+                                        <!-- Name -->
+                                    <div class="flex"(click)="openInfosDialog(intern.id)" >
+                                        {{intern.firstname}}
                                     </div>
-                                </ng-container>
-                                <!-- Contact -->
-                                <a
-                                    class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
-                                    [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedContact || selectedContact.id !== contact.id,
-                                                'bg-primary-50 dark:bg-hover': selectedContact && selectedContact.id === contact.id}"
-                                    [routerLink]="['./', contact.id]">
 
-                                    <div class="min-w-0 ml-4">
-                                        <div class="font-medium leading-5 truncate">{{contact.name}}</div>
-                                        <div class="leading-5 truncate text-secondary">{{contact.title}}</div>
+                                    <!-- Price -->
+                                    <div class="hidden sm:block"(click)="openInfosDialog(intern.id)" >
+                                        {{intern.lastname}}  
                                     </div>
-                                </a>
+
+                                  
+
+                                    <!-- Stock -->
+                                    <div class="hidden lg:flex items-center">
+                                        <div class="min-w-4" (click)="openInfosDialog(intern.id)" >{{intern.university}}</div>
+                                    </div>
+
+                                    <!-- Stock -->
+                                    <div class="hidden lg:flex items-center">
+                                        <div class="min-w-4" (click)="openInfosDialog(intern.id)" > {{intern.educationLevel}}</div>
+                                    </div>
+                                    <div class="hidden lg:flex items-center">
+                                        <div class="min-w-4" (click)="openInfosDialog(intern.id)" > {{intern.
+                                            email
+                                            }}</div>
+                                    </div>
+
+                                    <!-- Details button -->
+                                    <div class="inventory-grid grid items-center gap-10  h-12 gap-10 py-3 px-6 md:px-8">
+                                    <div>
+                                        <button
+                                            class="-ml-4 w-20 min-h-5 h-5 px-2 leading-6"
+                                            mat-flat-button
+                                            [color]="'primary'"
+                                           >
+                                            Update
+                                        </button>
+
+                                    </div>
+
+                                    <div>
+                                        <button
+                                            class="w-20 min-h-5 h-5 px-2 -ml-4 leading-6"
+                                            mat-button
+                                            [color]="'warn'"
+                                            (click)="deleteIntern(intern.id)"
+                                            >
+                                            Delete
+                                        </button>
+                    
+                                    </div>
+                                </div>
+                                </div>
+                            </a>
+                               
+
                             </ng-container>
                         </ng-container>
-                    </ng-container>
+                    </div>
+                </ng-container>
+            </ng-container>
 
-                    <!-- No contacts -->
-                    <ng-template #noContacts>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no contacts!</div>
-                    </ng-template>
+           
+            <ng-template #noProducts>
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no products!</div>
+            </ng-template>
 
-                </div>
+        </div>
 
-            </div>
-
-        </mat-drawer-content>
-
-    </mat-drawer-container>
+    </div>
 
 </div>

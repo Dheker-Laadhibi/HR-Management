@@ -32,7 +32,7 @@
                 mat-flat-button
                 [color]="'primary'"
                 (click)="openAddDialog()">
-                <span class="ml-2 mr-1">Add</span>
+                <span class="ml-2 mr-1">Add  a New Role </span>
             </button>
         </div>
     </div>
@@ -42,8 +42,8 @@
 
         <!-- Products list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden">
-            <ng-container *ngIf="(products$ | async) as products">
-                <ng-container *ngIf="products.length > 0; else noProducts">
+            <ng-container>
+                <ng-container>
                     <div class="grid">
                         <!-- Header -->
                         <div
@@ -54,18 +54,19 @@
                             <div [mat-sort-header]="'name'">Name</div>
 
 
-                            <div class="hidden sm:block">Details</div>
+                         
                         </div>
                         <!-- Rows -->
-                        <ng-container *ngIf="(products$ | async) as products">
-                            <ng-container *ngFor="let product of products; trackBy: trackByFn">
-                                <a class="inventory-row" (click)="openInfosDialog(product);">
+                           <!-- foooooooooooooooooooor role in roles  -->
+                        <ng-container>
+                            <ng-container  *ngFor="let role of roles">
+                                <a class="inventory-row" >
 
                                 <div class="inventory-grid grid items-center h-12 gap-200 py-3 px-6 md:px-8 border-b">
 
                                         <!-- Name -->
                                     <div class="flex">
-                                        Example
+                                        {{ role.name }}
                                     </div>
                                     <!-- Buttons -->
                                     <div class="inventory-grid grid items-center h-12 gap-10 py-3 px-6 md:px-8">
@@ -74,7 +75,7 @@
                                             class="-ml-4 w-20 min-h-5 h-5 px-2 leading-6"
                                             mat-flat-button
                                             [color]="'primary'"
-                                            (click)="openEditLabelsDialog(); $event.stopPropagation()">
+                                            (click)="openEditLabelsDialog(role.id)">
                                             Update
                                         </button>
 
@@ -85,7 +86,8 @@
                                             class="w-20 min-h-5 h-5 px-2 -ml-4 leading-6"
                                             mat-button
                                             [color]="'warn'"
-                                            (click)="deleteSelectedProduct();$event.stopPropagation()">
+                                            (click)="deleteRole(role.id)"
+                                            >
 
                                             Delete
                                         </button>
@@ -95,8 +97,8 @@
                             </a>
 
                                 <div class="grid">
-                                    <ng-container *ngIf="selectedProduct?.id === product.id">
-                                        <ng-container *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: product}"></ng-container>
+                                    <ng-container >
+                                        <ng-container ></ng-container>
                                     </ng-container>
                                 </div>
 
@@ -104,86 +106,12 @@
                         </ng-container>
                     </div>
 
-                    <mat-paginator
-                        class="sm:absolute sm:inset-x-1 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
-                        [ngClass]="{'pointer-events-none': isLoading}"
-                        [length]="pagination.length"
-                        [pageIndex]="pagination.page"
-                        [pageSize]="pagination.size"
-                        [pageSizeOptions]="[5, 10, 25, 100]"
-                        [showFirstLastButtons]="true"></mat-paginator>
+                   
 
                 </ng-container>
             </ng-container>
 
-            <ng-template
-                #rowDetailsTemplate
-                let-product>
-                <div class="shadow-lg overflow-hidden">
-                    <div class="flex border-b">
-                        <!-- Selected product form -->
-                        <form
-                            class="flex flex-col w-full"
-                            [formGroup]="selectedProductForm">
-
-                            <div class="flex flex-col sm:flex-row p-8">
-
-
-
-                                <div class="flex flex-auto flex-wrap">
-                                    <!-- Name, SKU & etc. -->
-                                    <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
-
-                                        <!-- Name -->
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Name</mat-label>
-                                            <input
-                                                matInput
-                                                [formControlName]="'name'">
-                                        </mat-form-field>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                            <div class="flex items-center justify-between w-full border-t px-8 py-4">
-                                <button
-                                    class="-ml-4"
-                                    mat-button
-                                    [color]="'warn'"
-                                    (click)="deleteSelectedProduct()">
-                                </button>
-
-                                <div class="flex items-center">
-                                    <div
-                                        class="flex items-center mr-4"
-                                        *ngIf="flashMessage">
-                                        <ng-container *ngIf="flashMessage === 'success'">
-                                            <mat-icon
-                                                class="text-green-500"
-                                                [svgIcon]="'heroicons_outline:check'"></mat-icon>
-                                            <span class="ml-2">Role updated</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="flashMessage === 'error'">
-                                            <mat-icon
-                                                class="text-red-500"
-                                                [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
-                                            <span class="ml-2">An error occurred, try again!</span>
-                                        </ng-container>
-                                    </div>
-                                    <button
-                                        mat-flat-button
-                                        [color]="'primary'"
-                                        (click)="updateSelectedProduct()">
-                                        Update
-                                    </button>
-                                </div>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-            </ng-template>
+         
 
             <ng-template #noProducts>
                 <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no products!</div>

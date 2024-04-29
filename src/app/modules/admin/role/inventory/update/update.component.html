@@ -7,21 +7,25 @@
         </button>
     </div>
 
-    <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden">
-        <form class="mt-8">
+    <form
+    class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto"
+    [formGroup]="composeFormF">
 
-            <!-- Name field -->
-            <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Name</mat-label>
-                <input matInput>
-            </mat-form-field>
+    <mat-form-field>
+        <mat-label>Role</mat-label>
+        <input
+            matInput
+            [formControlName]="'name'">
+    </mat-form-field>
 
 
-            <!-- Submit button -->
-            <button class="fuse-mat-button w-full mt-1" mat-flat-button color="primary">
-                <span>Update</span>
+            <button
+            class="fuse-mat-button w-full mt-1"
+            mat-flat-button
+                [color]="'primary'"
+                (click)="send()">
+                Update the existing  role
             </button>
-
         </form>
     </div>
-</div>
+

@@ -131,7 +131,7 @@ export class InventoryListComponent implements OnInit {
 
     
     fetchCompanies(): void {
-        console.log('Fetching loan requests...');
+        console.log('Fetching company...');
         this.CompanieServ.getAllCompanies(this.page,this.limits).subscribe(
             response => {
                 console.log('Data received:', response.data.items);
@@ -139,7 +139,7 @@ export class InventoryListComponent implements OnInit {
                
             },
             error => {
-                console.error('Error fetching loan requests:', error);
+                console.error('Error fetching company:', error);
             }
         );
     }

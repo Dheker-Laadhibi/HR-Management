@@ -1,0 +1,110 @@
+<div class="flex flex-col flex-auto w-200 min-w-80 p-2 md:p-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <!-- Image -->
+        <img src="https://icon-library.com/images/generic-profile-icon/generic-profile-icon-12.jpg" alt="Mission Image" class="w-32 h-auto mr-4">
+
+        <!-- Title -->
+        <div class="text-2xl font-semibold ml-2 text-blue-800"> new Intern</div>
+
+
+
+        <!-- Close button -->
+        <button matDialogClose mat-icon-button class="text-2xl">
+            <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+        </button>
+    </div>
+
+   
+  <form  class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto"
+        [formGroup]="composeForm"   >
+
+        <div class="flex space-x-4">
+             <!-- Name field -->
+             <mat-form-field appearance="outline" class="w-1/2">
+                <mat-label>firstname </mat-label>
+                <input
+                matInput
+                [formControlName]="'firstname'">
+            </mat-form-field>
+
+            <!-- Email field -->
+            <mat-form-field appearance="outline" class="w-1/2">
+                <mat-label>lastname</mat-label>
+                <input
+                matInput [formControlName]="'lastname'">
+            </mat-form-field>
+           </div>
+           <div class="flex space-x-4">
+
+             <!-- Password field -->
+             <mat-form-field appearance="outline" class="w-1/2">
+                <mat-label>university</mat-label>
+                <input
+                matInput [formControlName]="'university'"  >
+            </mat-form-field>
+            <mat-form-field appearance="outline"class="w-1/2">
+                <mat-label>email</mat-label>
+                <input
+                matInput [formControlName]="'email'">
+            </mat-form-field>
+           </div>
+           
+
+            <div class="flex space-x-4">
+
+<!-- Expiry Date field -->
+<mat-form-field appearance="outline" class="w-1/2">
+    <mat-label>End of internship</mat-label>
+       <input
+      matInput [formControlName]="'end_date'" [matDatepicker]="end_date" formControlName="end_date">
+    <mat-datepicker-toggle matSuffix [for]="end_date"></mat-datepicker-toggle>
+    <mat-datepicker #end_date></mat-datepicker>
+    </mat-form-field>
+
+  <mat-form-field appearance="outline"class="w-1/2">
+<mat-label>Start Date of internship</mat-label>
+   <input
+  matInput [formControlName]="'start_date'" [matDatepicker]="start_date" formControlName="start_date">
+<mat-datepicker-toggle matSuffix [for]="start_date"></mat-datepicker-toggle>
+<mat-datepicker #start_date></mat-datepicker>
+</mat-form-field>
+            </div>
+        
+  <!-- Gender field -->
+  <mat-form-field class="w-1/3">
+    <mat-label>Education level</mat-label>
+    <mat-select formControlName="educationLevel"  class="custom-select">
+        <mat-option value="Master of Computer Science (M1)">Master  (M1)</mat-option>
+        <mat-option value="L1">L1</mat-option>
+        <mat-option value="L2">L2</mat-option>
+        <mat-option value="Bachelor of Computer Science">Bachelor </mat-option>
+
+    </mat-select>
+</mat-form-field>
+
+<div class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6">
+       <div class="flex items-center mt-4 sm:mt-0">
+        <!-- Discard -->
+           <button
+              class="ml-auto mt-3  ml-10   mr-5  sm:ml-0"
+               mat-flat-button
+                [color]="'warn'"
+              (click)="onCancel()">
+              Discard
+             </button>
+        <!-- Send -->
+          <!-- Submit button -->
+          <button class="ml-auto  mt-3  ml-5   mr-5 sm:ml-0"
+          mat-flat-button
+              [color]="'primary'"
+          (click)="send()">
+              <span>Add New Mission</span>
+          </button>
+
+    </div>
+    </div>
+
+        </form>
+    
+</div>
