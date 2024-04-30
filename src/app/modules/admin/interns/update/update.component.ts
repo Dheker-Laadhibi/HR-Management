@@ -1,3 +1,4 @@
+import { InternService } from './../../../../Services/intern.service';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import {  ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -9,21 +10,20 @@ import { MatInputModule } from '@angular/material/input';
 import { debounceTime, filter, Observable, Subject, switchMap, takeUntil } from 'rxjs';
 
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ProjectsService } from './../../../../../Services/projects.service';
+
 import { UserData } from 'app/Model/session';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DateTime } from 'luxon';
 @Component({
     selector       : 'notes-labels',
     templateUrl    : './update.component.html',
     encapsulation  : ViewEncapsulation.None,
   
     standalone     : true,
-    imports        : [MatButtonModule, MatSnackBarModule, ReactiveFormsModule, MatDialogModule, MatIconModule, MatFormFieldModule, MatInputModule, NgIf, NgFor, FormsModule, AsyncPipe,MatSnackBarModule],
+    imports        : [MatButtonModule,  MatDatepickerModule,MatSnackBarModule, ReactiveFormsModule, MatDialogModule, MatIconModule, MatFormFieldModule, MatInputModule, NgIf, NgFor, FormsModule, AsyncPipe,MatSnackBarModule],
 })
 export class UpdateComponent implements OnInit, OnDestroy
-
-{   
-  
-  projectId: string;
+{    intern: any;
     composeFormF: FormGroup;
     type :any
     flashMessage: 'success' | 'error' | null = null;
@@ -31,7 +31,7 @@ export class UpdateComponent implements OnInit, OnDestroy
     userData: UserData = JSON.parse(this.userDataString);
     CompanyId = this.userData[1].data.user.workCompanyId || '';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-    
+    internIdSended:string
     
 
     /**
@@ -43,10 +43,18 @@ export class UpdateComponent implements OnInit, OnDestroy
         public matDialogRef: MatDialogRef<UpdateComponent>,
         private _changeDetectorRef: ChangeDetectorRef,
         private formBuilder: FormBuilder,
-        private ProjectsService:ProjectsService,
+        private InternService:InternService,
     )
     {
-      this.projectId = this.data.projectId;
+
+     
+    this.internIdSended=this.data.intern.id;
+    console.log("id internooo" , this.internIdSended);
+    
+      this.intern= this.data.intern;
+      console.log("sended intern",this.intern);
+  
+     
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -59,10 +67,11 @@ export class UpdateComponent implements OnInit, OnDestroy
     ngOnInit(): void
     {
         this.composeFormF = this.formBuilder.group({  
-            projectname: ['', Validators.required],
-            description: ['', Validators.required],
-            technologies: [[]],
-            code: ['', Validators.required],
+          email: ['', Validators.required],
+          Gender: ['', Validators.required],
+           Adress: ['', Validators.required],
+          PhoneNumber: ['', Validators.required],
+         
         });
     }
 
@@ -115,31 +124,31 @@ export class UpdateComponent implements OnInit, OnDestroy
         this.matDialogRef.close();
       }
 
-// Méthode pour convertir les données entrées en un tableau de chaînes
-convertToTechnologiesArray(technologiesString: string): string[] {
-    // Séparez les technologies saisies par l'utilisateur en utilisant une virgule ou un autre séparateur de votre choix
-    return technologiesString.split(',').map(tech => tech.trim());
-  }
+
 
   send(): void {
-    const technologiesArray = this.convertToTechnologiesArray(this.composeFormF.value.technologies);
+  
       // Envoi de la date formatée au serveur
-      const projectData = {
-        code: this.composeFormF.value.code,
-        projectname: this.composeFormF.value.projectname,
-        technologies:   technologiesArray,
-        description: this.composeFormF.value.description,
+      const interntData = {
+        email: this.composeFormF.value.email,
+        Gender: this.composeFormF.value.Gender,
+        PhoneNumber: this.composeFormF.value.PhoneNumber,
+        Adress: this.composeFormF.value.Adress,
         
       };
   
+
       // Envoyer les données au serveur
-      this.ProjectsService.updateProject(this.CompanyId,this. projectId,projectData).subscribe(
+      this.InternService.updateIntern(this.CompanyId,this.internIdSended,interntData).subscribe(
         (response) => {
           this.type ='success'  
-          console.log('Projet updated avec succès :', response);
+          console.log('intern   updated avec succès :', response);
           if (this.type ='success')   {
-            this.openSnackBar(' new project updated successfuy', 'Close');
+            this.openSnackBar(' intern updated successfuy', 'Close');
             this.matDialogRef.close();
+            window.location.reload();
+
+            
            }
           
           // Gérer la réponse du serveur si nécessaire
@@ -156,6 +165,7 @@ convertToTechnologiesArray(technologiesString: string): string[] {
       );
     } 
 
+  }
 
 
 
@@ -188,4 +198,3 @@ convertToTechnologiesArray(technologiesString: string): string[] {
 
 
 
-}

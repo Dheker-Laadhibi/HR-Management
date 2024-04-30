@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import {  Component, ViewEncapsulation } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({

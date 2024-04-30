@@ -1,6 +1,6 @@
 import { CandidateService } from './../../../../Services/candidate.service';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {  ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -94,17 +94,21 @@ onCancel() {
           lastName: this.composeForm.value.lastname,
           password: this.composeForm.value.password,
           role_name: this.role_name,
+        
+          
           university:this.composeForm.value.university,
           adress:this.composeForm.value.adress,
           education_level:this.composeForm.value.education_level,
           
         };
+        console.log('candidate role:', candidate.role_name);
         console.log('candidate:', candidate);
         this.CandidateService.createCandidat(this.CompanyId,candidate).subscribe(
          
           response => {
+        console.log(candidate);
         
-            console.log('candidate added successfully:', response);
+            console.log('candidate added successfully:', candidate);
             this.showSnackbar('candidate added successfully');
             this.dialog.closeAll();
           },

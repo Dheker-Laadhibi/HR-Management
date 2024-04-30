@@ -39,7 +39,7 @@ export class CandidateService {
     }
   }
    createCandidat(Companyid: string, Candidat: any): Observable<any> {
-    return this.http.post<CondidatIn>(`${this.apiUrl}/candidats/${Companyid}`, Candidat , { headers: this.headers });
+    return this.http.post<any>(`${this.apiUrl}/candidats/${Companyid}`, Candidat , { headers: this.headers });
   }
 
   getCandidats(Companyid: string): Observable<any> {

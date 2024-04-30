@@ -16,6 +16,7 @@ import { Contact, Country } from '../contacts.types';
 import { UserData } from 'app/Model/session';
 import { MatDialog } from '@angular/material/dialog';
 import { AddComponent } from '../add/labels.component';
+import { ContactsDetailsComponent } from '../details/details.component';
 
 @Component({
     selector       : 'contacts-list',
@@ -53,11 +54,11 @@ export class ContactsListComponent implements OnInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _contactsService: ContactsService,
         @Inject(DOCUMENT) private _document: any,
-        private _router: Router,
+    
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        //private userService : UserService,
+ 
         private _matDialog: MatDialog,
-        private router: Router,
+     
         private CandidateService:CandidateService,
     )
     {
@@ -76,57 +77,34 @@ export class ContactsListComponent implements OnInit, OnDestroy
         
         this.fetchCandidates();
        
-        // Subscribe to search input field value changes
-        this.searchInputControl.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                switchMap(query =>
-
-                    // Search
-                    this._contactsService.searchContacts(query),
-                ),
-            )
-            .subscribe();
-
-        // Subscribe to MatDrawer opened change
-        this.matDrawer.openedChange.subscribe((opened) =>
-        {
-            if ( !opened )
-            {
-                console.log('clickedddddd');
-                // Remove the selected contact when drawer closed
-                this.selectedContact = null;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            }
-        });
-
-        // Subscribe to media changes
-        this._fuseMediaWatcherService.onMediaChange$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) =>
-            {
-                // Set the drawerMode if the given breakpoint is active
-                if ( matchingAliases.includes('lg') )
-                {
-                    this.drawerMode = 'side';
-                }
-                else
-                {
-                    this.drawerMode = 'over';
-                }
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+       
 
 
     }
 
-    navigateToUserDetails(candidateId: string): void {
-        this.router.navigate(['user-details', candidateId]);
+    
+    openInfosDialog(candidat: any): void
+    {
+        const dialogRef = this._matDialog.open(ContactsDetailsComponent, {
+            autoFocus: false,
+            data: { candidat }
+          });
+        
+          dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+          });
     }
+
+
+
+
+
+
+
+
+
+
+  
     /**
      * On destroy
      */
@@ -144,29 +122,19 @@ export class ContactsListComponent implements OnInit, OnDestroy
 
 
     fetchCandidates(): void {
-        console.log('Fetching users...');
+        console.log('Fetching Candidates...');
         this.CandidateService.getCandidats(this.CompanyId).subscribe(
             response => {
                 console.log('candidat received :', response.data.items);
                 this.candidats = response.data.items;
             },
             error => {
-                console.error('Error fetching questions:', error);
+                console.error('Error fetching candidates:', error);
             }
         );
     } 
 
-    /**
-     * On backdrop clicked
-     */
-    onBackdropClicked(): void
-    {
-        // Go back to the list
-        this._router.navigate(['./'], {relativeTo: this._activatedRoute});
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
+    
 
     /**
      * Create contact

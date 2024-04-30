@@ -19,6 +19,7 @@ import { ContactsDetailsComponent } from '../details/details.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { AddComponent } from '../add/add.component';
+import { UpdateComponent } from '../update/update.component';
 
 @Component({
     selector       : 'contacts-list',
@@ -98,6 +99,11 @@ export class ContactsListComponent  implements OnInit, OnDestroy
     
     }
   
+
+
+  
+
+
     deleteIntern(internId: string): void {
         const confirmation = this._fuseConfirmtionService.open({
             title: 'Delete Intern',
@@ -147,12 +153,12 @@ export class ContactsListComponent  implements OnInit, OnDestroy
     }
 
    
-     openEditLabelsDialog(mission: any): void
+     openEditLabelsDialog(intern: any): void
      {
-        console.log('Updating project with ID:', mission);
-        this._matDialog.open(ContactsDetailsComponent, {
+        console.log('Updating intern with ID:', intern);
+        this._matDialog.open(UpdateComponent, {
             autoFocus: false,
-            data: {mission}
+            data: {intern}
          
         });
         
