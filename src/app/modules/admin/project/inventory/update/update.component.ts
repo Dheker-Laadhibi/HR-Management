@@ -140,6 +140,7 @@ convertToTechnologiesArray(technologiesString: string): string[] {
           if (this.type ='success')   {
             this.openSnackBar(' new project updated successfuy', 'Close');
             this.matDialogRef.close();
+            window.location.reload();
            }
           
           // Gérer la réponse du serveur si nécessaire

@@ -103,6 +103,7 @@ export class UpdateComponent implements OnInit, OnDestroy
                            }
                         this.matDialogRef.close();
                     console.log('Role added:', response); 
+                    window.location.reload();
                     },
                     error => {
                      

@@ -46,6 +46,10 @@ import { UserData } from 'app/Model/session';
                 @screen lg {
                     grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
                 }
+                .nowrap {
+    white-space: nowrap;
+}
+
             }
         `,
     ],

@@ -1,11 +1,13 @@
+import { UserServiceService } from './../../../Services/user-service.service';
 import { DecimalPipe, NgFor } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {  Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
+import { UserData } from 'app/Model/session';
 import { AnalyticsService } from 'app/modules/admin/dashboard/dashboard.service';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { Subject, takeUntil } from 'rxjs';
@@ -14,12 +16,19 @@ import { Subject, takeUntil } from 'rxjs';
     selector       : 'analytics',
     templateUrl    : './dashboard.component.html',
     encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+   
     standalone     : true,
     imports        : [MatButtonModule, MatIconModule, MatMenuModule, MatButtonToggleModule, NgApexchartsModule, MatTooltipModule, NgFor, DecimalPipe],
 })
 export class AnalyticsComponent implements OnInit, OnDestroy
 {
+
+    malePercentage:any
+    femalePercentage:any
+    userDataString = localStorage.getItem('userData');
+    userData: UserData = JSON.parse(this.userDataString);
+    CompanyId = this.userData[1].data.user.workCompanyId || '';
+     userID =this.userData[1].data.user.ID
     chartVisitors: ApexOptions;
     chartConversions: ApexOptions;
     chartImpressions: ApexOptions;
@@ -39,6 +48,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy
     constructor(
         private _analyticsService: AnalyticsService,
         private _router: Router,
+       private UserServiceService :UserServiceService 
     )
     {
     }
@@ -50,8 +60,71 @@ export class AnalyticsComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+        ngOnInit(): void
+        {
+            this.UserServiceService.getAllGenders(this.CompanyId)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((response) => {
+                this.femalePercentage = response.data.femalePercentage;
+                this.malePercentage = response.data.malePercentage;
+    
+                // Définir chartGender ici, après avoir récupéré les pourcentages
+                this.chartGender = {
+                    chart: {
+                        animations: {
+                            speed: 400,
+                            animateGradually: {
+                                enabled: false,
+                            },
+                        },
+                        fontFamily: 'inherit',
+                        foreColor: 'inherit',
+                        height: '100%',
+                        type: 'donut',
+                        sparkline: {
+                            enabled: true,
+                        },
+                    },
+                    colors: ['#319795', '#4FD1C5'],
+                    labels: ["male", "female"],
+                    plotOptions: {
+                        pie: {
+                            customScale: 0.9,
+                            expandOnClick: false,
+                            donut: {
+                                size: '70%',
+                            },
+                        },
+                    },
+                    series: [this.malePercentage, this.femalePercentage],
+                    states: {
+                        hover: {
+                            filter: {
+                                type: 'none',
+                            },
+                        },
+                        active: {
+                            filter: {
+                                type: 'none',
+                            },
+                        },
+                    },
+                    tooltip: {
+                        enabled: true,
+                        fillSeriesColor: false,
+                        theme: 'dark',
+                        custom: ({
+                            seriesIndex,
+                            w,
+                        }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
+                                                         <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
+                                                         <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
+                                                         <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
+                                                     </div>`,
+                    },
+                };
+            });
+
         // Get the data
         this._analyticsService.data$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -188,6 +261,8 @@ export class AnalyticsComponent implements OnInit, OnDestroy
                     },
                 },
             },
+
+            //affichage de donnees de gendre 
             series    : this.data.visitors.series,
             stroke    : {
                 width: 2,
@@ -490,61 +565,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy
             },
         };
 
-        // Gender
-        this.chartGender = {
-            chart      : {
-                animations: {
-                    speed           : 400,
-                    animateGradually: {
-                        enabled: false,
-                    },
-                },
-                fontFamily: 'inherit',
-                foreColor : 'inherit',
-                height    : '100%',
-                type      : 'donut',
-                sparkline : {
-                    enabled: true,
-                },
-            },
-            colors     : ['#319795', '#4FD1C5'],
-            labels     : this.data.gender.labels,
-            plotOptions: {
-                pie: {
-                    customScale  : 0.9,
-                    expandOnClick: false,
-                    donut        : {
-                        size: '70%',
-                    },
-                },
-            },
-            series     : this.data.gender.series,
-            states     : {
-                hover : {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-                active: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-            },
-            tooltip    : {
-                enabled        : true,
-                fillSeriesColor: false,
-                theme          : 'dark',
-                custom         : ({
-                    seriesIndex,
-                    w,
-                }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
-                                                     <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-                                                     <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
-                                                     <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
-                                                 </div>`,
-            },
-        };
+      
 
         // Age
         this.chartAge = {

@@ -215,7 +215,7 @@ if(start_dateTime>currentDate &&exp_dateTime>=start_dateTime ){
             this.openSnackBar(' new mission  added successfuy', 'Close');
             this.matDialogRef.close();
             this.missionAdded.emit(missionData);
-       
+            window.location.reload();
            }
           
           // Gérer la réponse du serveur si nécessaire

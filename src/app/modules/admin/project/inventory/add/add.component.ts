@@ -197,6 +197,7 @@ if(expDateTime>currentDate){
           if (this.type ='success')   {
             this.openSnackBar(' new project added successfuy', 'Close');
             this.matDialogRef.close();
+            window.location.reload();
            }
           
           // Gérer la réponse du serveur si nécessaire

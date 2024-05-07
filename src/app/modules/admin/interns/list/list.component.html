@@ -47,30 +47,20 @@
                     <div class="grid">
                         <!-- Header -->
                         <div
-                            class="inventory-grid z-10 sticky top-0 grid gap-30 py-4 h-10 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            class="inventory-grid z-10 sticky top-0 grid gap-30 py-3 h-10 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
                             matSort
                             matSortDisableClear>
 
-                            <div    class="hidden sm:block" 
+                            <div    class="hidden sm:block  nowrap" 
                              [mat-sort-header]="'name'">
                              firstname</div>
                             <div
-                                class="hidden sm:block"
+                                class="hidden sm:block nowrap"
                                 [mat-sort-header]="'price'">
                                lastname
                             </div>
-                            <div
-                                class="hidden lg:block"
-                                [mat-sort-header]="'stock'">
-                               
-                               university
-
-                            </div>
-                            <div
-                                class="hidden lg:block"
-                                [mat-sort-header]="'active'">
-                                educationLevel
-                            </div>
+                          
+                          
 
                             <div
                             class="hidden lg:block"
@@ -87,10 +77,10 @@
  
                                 <a class="inventory-row"   >
 
-                                <div class="inventory-grid grid items-center h-12 gap-30 py-3 px-6 md:px-8 border-b">
+                                <div class="inventory-grid grid items-center  h-12 gap-30  py-1 px-6 md:px-8 border-b">
 
                                         <!-- Name -->
-                                    <div class="flex"(click)="openInfosDialog(intern.id)" >
+                                    <div class="flex nowrap"(click)="openInfosDialog(intern.id)" >
                                         {{intern.firstname}}
                                     </div>
 
@@ -101,20 +91,15 @@
 
                                   
 
-                                    <!-- Stock -->
-                                    <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4" (click)="openInfosDialog(intern.id)" >{{intern.university}}</div>
-                                    </div>
+                                  
 
-                                    <!-- Stock -->
-                                    <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4" (click)="openInfosDialog(intern.id)" > {{intern.educationLevel}}</div>
-                                    </div>
+                                   
                                     <div class="hidden lg:flex items-center">
                                         <div class="min-w-4" (click)="openInfosDialog(intern.id)" > {{intern.
                                             email
                                             }}</div>
                                     </div>
+
 
                                     <!-- Details button -->
                                     <div class="inventory-grid grid items-center gap-10  h-12 gap-10 py-3 px-6 md:px-8">

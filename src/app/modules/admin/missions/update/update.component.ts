@@ -132,7 +132,7 @@ export class UpdateComponent implements OnInit, OnDestroy
             this.openSnackBar(' mission  updated successfuy', 'Close');
             this.matDialogRef.close();
            console.log(" this.data", this.data);
-           
+           window.location.reload();
            }
           
           // Gérer la réponse du serveur si nécessaire

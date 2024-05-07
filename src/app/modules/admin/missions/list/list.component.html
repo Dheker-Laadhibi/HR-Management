@@ -79,22 +79,21 @@
                                 <div class="inventory-grid grid items-center h-12 gap-30 py-3 px-6 md:px-8 border-b">
 
                                         <!-- Name -->
-                                    <div class="flex"(click)="openInfosDialog(mission)" >
+                                    <div class="flex nowrap"(click)="openInfosDialog(mission)" >
                                         {{mission.Object}}
                                     </div>
 
                                     <!-- Price -->
-                                    <div class="hidden sm:block"(click)="openInfosDialog(mission)" >
+                                    <div class="hidden sm:block  nowrap"(click)="openInfosDialog(mission)" >
                                         {{mission.desciption}}  
                                     </div>
 
-                                    <!-- Stock -->
-                                    <div class="hidden lg:flex items-center">
-                                        <div class="min-w-4" (click)="openInfosDialog(mission)" >{{mission.StartDate}}</div>
-                                    </div>
+                                 <div class="hidden lg:flex items-center nowrap">
+                <div class="min-w-4" (click)="openInfosDialog(mission)">{{ mission.StartDate | date: 'yyyy-MM-dd' }}</div>
+                    </div>
 
                                     <!-- Stock -->
-                                    <div class="hidden lg:flex items-center">
+                                    <div class="hidden lg:flex items-center nowrap">
                                         <div class="min-w-4" (click)="openInfosDialog(mission)" >   {{mission.Transport}}</div>
                                     </div>
 
@@ -108,9 +107,7 @@
                                             (click)="openEditLabelsDialog(mission.id)">
                                             Update
                                         </button>
-
                                     </div>
-
                                     <div>
                                         <button
                                             class="w-20 min-h-5 h-5 px-2 -ml-4 leading-6"
@@ -118,7 +115,6 @@
                                             [color]="'warn'"
                                             (click)="deleteRequest(mission.id)"
                                             >
- 
                                             Delete
                                         </button>
                                     </div>
@@ -126,7 +122,6 @@
                                 </div>
                             </a>
                                
-
                             </ng-container>
                         </ng-container>
                     </div>

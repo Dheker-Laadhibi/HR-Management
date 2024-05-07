@@ -165,6 +165,7 @@ export class AddComponent implements OnInit, OnDestroy
                         console.log('company update successfully:', response);
                     
                         this.matDialogRef.close();
+                        window.location.reload();
                       
                     },
                     error => {

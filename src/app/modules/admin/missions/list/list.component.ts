@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDragPreview, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AsyncPipe, CurrencyPipe, DatePipe, DOCUMENT, NgClass, NgFor, NgIf, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
+import { AsyncPipe, CommonModule, CurrencyPipe, DatePipe, DOCUMENT, NgClass, NgFor, NgIf, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +23,7 @@ import { UserData } from 'app/Model/session';
 import { MissionOrdersService } from 'app/Services/mission-orders.service';
 import { TasksService } from 'app/modules/admin/missions/missions.service';
 import { Tag, Task } from 'app/modules/admin/missions/missions.types';
-import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
+import { filter, fromEvent, map, Subject, Subscription, takeUntil } from 'rxjs';
 import { AddComponent } from '../add/add.component';
 
 import { UpdateComponent } from '../update/update.component';
@@ -49,11 +49,14 @@ import { UpdateComponent } from '../update/update.component';
                 @screen lg {
                     grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
                 }
+                .nowrap {
+        white-space: nowrap;
+    }
             }
         `,
     ],
     standalone     : true,
-    imports        : [NgIf, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
+    imports        : [NgIf, MatProgressBarModule,CommonModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
 })
 export class TasksListComponent implements OnInit, OnDestroy
 {
@@ -165,27 +168,37 @@ export class TasksListComponent implements OnInit, OnDestroy
 /* open dialog for dlt*/ 
    
 
-
+formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+}
 
 
 
     
-    loadMissions(): void {
-        console.log('Fetching  projects...');
-        this._missionService.getAllMissions(this.CompanyId).subscribe(
-            response => {
-                console.log('Data received:', response.data.items);
-                this.missions = response.data.items;
-                console.log("missions ",this.missions);
-               
-            },  
-            error => {
-                console.error('Error fetching missions:', error);
-            }
-        );
-    }
+loadMissions(): void {
+    console.log('Fetching projects...');
+    this.missionsSubscription = this._missionService.getAllMissions(this.CompanyId).pipe(
+        map(response => {
+            // Map response data here
+            return response.data.items.map((item: any) => {
+                // Format date fields here if needed
+                item.StartDate = this.formatDate(item.StartDate);
+                return item;
+            });
+        })
+    ).subscribe(
+        missions => {
+            console.log('Data received:', missions);
+            this.missions = missions;
+        },
+        error => {
+            console.error('Error fetching missions:', error);
+        }
+    );
+}
 
-
+    private missionsSubscription: Subscription | undefined;
 
 
 

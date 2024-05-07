@@ -21,7 +21,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { InventoryService } from 'app/modules/admin/Company/inventory/inventory.service';
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/Company/inventory/inventory.types';
-import { catchError, debounceTime, map, merge, Observable, pipe, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { catchError, debounceTime, map, merge, Observable, pipe, Subject, Subscription, switchMap, takeUntil, tap } from 'rxjs';
 import { NotesLabelsComponent } from 'app/modules/admin/Company/inventory/labels/labels.component';
 import { UpdateComponent } from 'app/modules/admin/Company/inventory/update/update.component';
 import { AddComponent } from 'app/modules/admin/Company/inventory/add/add.component';
@@ -55,6 +55,10 @@ import { AuthInterceptorService } from 'app/Services/auto-interceptor.service';
                 @screen lg {
                     grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
                 }
+
+                .nowrap {
+        white-space: nowrap;
+    }
             }
         `,
     ],
@@ -65,6 +69,8 @@ import { AuthInterceptorService } from 'app/Services/auto-interceptor.service';
     
 })
 export class InventoryListComponent implements OnInit {
+
+   
     page=1;
     limits=10;
 
@@ -129,14 +135,26 @@ export class InventoryListComponent implements OnInit {
     }
 
 
-    
+    formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0];
+    }
+    private companiesSubscription: Subscription | undefined;
     fetchCompanies(): void {
         console.log('Fetching company...');
-        this.CompanieServ.getAllCompanies(this.page,this.limits).subscribe(
-            response => {
-                console.log('Data received:', response.data.items);
-                this.companies = response.data.items;
-               
+        this.companiesSubscription = this.CompanieServ.getAllCompanies(this.page, this.limits).pipe(
+            map(response => {
+                // Map response data here
+                return response.data.items.map((item: any) => {
+                    // Format createdAt date
+                    item.createdAt = this.formatDate(item.createdAt);
+                    return item;
+                });
+            })
+        ).subscribe(
+            companies => {
+                console.log('Data received:', companies);
+                this.companies = companies;
             },
             error => {
                 console.error('Error fetching company:', error);

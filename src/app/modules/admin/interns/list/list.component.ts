@@ -39,9 +39,30 @@ import { UpdateComponent } from '../update/update.component';
                     grid-template-columns: 48px 112px auto 112px 72px;
                 }
 
+                /* Ajouter de la marge entre les éléments du header */
+
+
                 @screen lg {
                     grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
                 }
+                .flex.items-center.mt-6.sm\:mt-0.sm\:ml-4 > * {
+    
+                    margin: 1rem; /* Ajouter 0.5rem de marge au-dessus des éléments */
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+/* Ajouter de l'espace entre les lignes de la liste des internes */
+.inventory-row {
+    margin: 1rem; /* Ajouter 1rem d'espace en bas de chaque ligne */
+    
+}
+
+.inventory-grid .grid > div {
+    overflow-wrap: anywhere; /* Permettre le saut de ligne si nécessaire */
+}
             }
         `,
     ],

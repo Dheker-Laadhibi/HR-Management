@@ -15,17 +15,15 @@
             </div>
  
 
-            <!-- Bouton de fermeture -->
-            <button matDialogClose mat-icon-button class="text-2xl">
-                <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
-            </button>
+            <button
+            class="ml-4"
+             matDialogClose
+             mat-icon-button 
+             [color]="'warn'">
+             <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+         </button>
         </div>
-        <div *ngIf="!isAccepted" class="inline-block ml-2 text-green-600">
-            <div class="text-green-600/100">
-                Candidate Already Accepted As intern
-                <mat-icon  class="green-icon" [svgIcon]="'heroicons_solid:check-circle'"   style="color: green;  font-size: 50px;"></mat-icon>
-            </div>
-        </div>
+      
         <!-- Contact -->
         <div class="flex items-center justify-between">
             <div class="w-full max-w-3xl">
@@ -65,9 +63,18 @@
            class="ml-auto mt-3  ml-10   mr-5  sm:ml-0"
             mat-flat-button
              [color]="'warn'"
-           (click)="onCancel()">
-           Discard
+           (click)="deleteRequest(data.candidat.id)">
+           Delete
           </button>
+
+
+          <button
+          class="ml-auto mt-3  ml-10   mr-5  sm:ml-0"
+           mat-flat-button
+            [color]="'primary'"
+          (click)="onCancel()">
+          Cancel
+         </button>
      <!-- Send -->
        <!-- Submit button -->
        <button class="ml-auto  mt-3  ml-5   mr-5 sm:ml-0"
@@ -77,7 +84,9 @@
            [disabled]="isAccepted"
        >
            <span>Accept as Intern</span>
+
        </button>
+       
 
        <div *ngIf="isAccepted" class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
         <span class="font-medium">Success alert!</span> Congratulations! You have been accepted as an intern.

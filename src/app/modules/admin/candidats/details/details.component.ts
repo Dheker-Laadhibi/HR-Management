@@ -72,6 +72,7 @@ export class ContactsDetailsComponent implements OnInit
     userData: UserData = JSON.parse(this.userDataString);
     CompanyId = this.userData[1].data.user.workCompanyId || '';
     userId = this.userData[1].data.user.ID|| '';  
+  CandidateID: any;
     onCancel(): void {
         // Fermer le dialogue sans rien faire
         this.matDialogRef.close();
@@ -95,6 +96,8 @@ export class ContactsDetailsComponent implements OnInit
     private CandidateService:CandidateService,
     private InternService:InternService,
     public matDialogRef: MatDialogRef<ContactsDetailsComponent>,
+    
+    private _fuseConfirmtionService: FuseConfirmationService,
     )
     {
         
@@ -156,6 +159,8 @@ export class ContactsDetailsComponent implements OnInit
                 this.matDialogRef.close();
 
                 this.isAccepted = true;
+                console.log(this.isAccepted);
+                
                 
                }
               
@@ -172,6 +177,55 @@ export class ContactsDetailsComponent implements OnInit
             }
           );
         } 
+
+
+
+
+
+
+
+
+        deleteRequest(candidateid: string): void {
+          const confirmation = this._fuseConfirmtionService.open({
+              title: 'Delete role',
+              message: 'Are you sure you want to remove this candiate? This action cannot be undone!',
+              actions: {
+                  confirm: {
+                      show: true,
+                      label: 'Delete',
+                      color: 'warn'
+                  },
+                  cancel: {
+                      show: true,
+                      label: 'Cancel'
+                  }
+              }
+          });
+  
+          confirmation.afterClosed().subscribe(result => {
+              if (result === 'confirmed') {
+                  if (candidateid) {
+                      this.CandidateID=candidateid
+                      this.CandidateService.deleteCandidat(this.CompanyId, this.CandidateID).subscribe(
+                          response => {
+                              console.log('Loan request deleted successfully:', response);
+                              window.location.reload();
+                              this.CandidateID = null;
+                          },
+                          error => {
+                              console.error('Error deleting loan request:', error);
+                          }
+                      );
+                  }
+              }
+          });
+      }
+
+
+
+
+
+
     
     }
 

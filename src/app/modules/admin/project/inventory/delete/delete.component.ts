@@ -85,6 +85,7 @@ export class deleteComponent implements OnInit, OnDestroy
                     console.log('project deleted successfully:', response);
                     this.openSnackBar('project deleted successfully', 'Close');
                     this.matDialogRef.close();
+                    window.location.reload();
                 },
                 error => {
                     // Gérez les erreurs de suppression de l'entreprise ici

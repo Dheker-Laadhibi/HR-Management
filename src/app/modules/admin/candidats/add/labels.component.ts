@@ -111,6 +111,7 @@ onCancel() {
             console.log('candidate added successfully:', candidate);
             this.showSnackbar('candidate added successfully');
             this.dialog.closeAll();
+            window.location.reload();
           },
           error => {
             console.error('Error adding candidate:', error);
