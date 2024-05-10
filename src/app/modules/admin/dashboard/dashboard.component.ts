@@ -1,3 +1,5 @@
+import { analytics } from './../../../mock-api/dashboards/analytics/data';
+import { CandidateService } from './../../../Services/candidate.service';
 import { UserServiceService } from './../../../Services/user-service.service';
 import { DecimalPipe, NgFor } from '@angular/common';
 import {  Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
@@ -10,7 +12,7 @@ import { Router } from '@angular/router';
 import { UserData } from 'app/Model/session';
 import { AnalyticsService } from 'app/modules/admin/dashboard/dashboard.service';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
-import { Subject, takeUntil } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector       : 'analytics',
@@ -22,9 +24,13 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class AnalyticsComponent implements OnInit, OnDestroy
 {
-
+    Refused_Percentage :any
+    Acceptance_Percentage:any
     malePercentage:any
     femalePercentage:any
+    bachelorPercentage:any
+    MasterPercentage:any
+    otherPercentage:any
     userDataString = localStorage.getItem('userData');
     userData: UserData = JSON.parse(this.userDataString);
     CompanyId = this.userData[1].data.user.workCompanyId || '';
@@ -48,7 +54,8 @@ export class AnalyticsComponent implements OnInit, OnDestroy
     constructor(
         private _analyticsService: AnalyticsService,
         private _router: Router,
-       private UserServiceService :UserServiceService 
+       private UserServiceService :UserServiceService ,
+    private CandidateService: CandidateService,
     )
     {
     }
@@ -62,12 +69,37 @@ export class AnalyticsComponent implements OnInit, OnDestroy
      */
         ngOnInit(): void
         {
-            this.UserServiceService.getAllGenders(this.CompanyId)
+
+            const genderData$ = this.UserServiceService.getAllGenders(this.CompanyId);
+            const acceptanceData$ = this.CandidateService.getAcceptancePercentage(this.CompanyId);
+        
+  const    levelData$=this.CandidateService.getlevelPercentage(this.CompanyId);
+
+
+  forkJoin({ genderData$, acceptanceData$, levelData$ })
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((response) => {
-                this.femalePercentage = response.data.femalePercentage;
-                this.malePercentage = response.data.malePercentage;
+            .subscribe(({ genderData$, acceptanceData$ , levelData$}) => {
+                console.log("levelData",levelData$);
+                
+                // Extract data from responses
+                const genderResponse = genderData$.data;
+                const acceptanceResponse = acceptanceData$.data;
+              const levelResponse = levelData$.data;
+              console.log("levelResponse",levelResponse);
+              
+                // Assign data to variables
+                this.femalePercentage = genderResponse.femalePercentage;
+                this.malePercentage = genderResponse.malePercentage;
+                console.log(this.femalePercentage);
+                this.bachelorPercentage=levelResponse.bachelor
+                this.MasterPercentage= levelResponse.master
+                this.otherPercentage=levelResponse.other
+                
     
+                this.Acceptance_Percentage = acceptanceResponse.Acceptance_Percentage;
+                this.Refused_Percentage = acceptanceResponse.Refused_Percentage;
+    
+           
                 // Définir chartGender ici, après avoir récupéré les pourcentages
                 this.chartGender = {
                     chart: {
@@ -85,14 +117,14 @@ export class AnalyticsComponent implements OnInit, OnDestroy
                             enabled: true,
                         },
                     },
-                    colors: ['#319795', '#4FD1C5'],
+                    colors: ['#DD761C', '#FEB941'],
                     labels: ["male", "female"],
                     plotOptions: {
                         pie: {
                             customScale: 0.9,
                             expandOnClick: false,
                             donut: {
-                                size: '70%',
+                                size: '70%', // Modifiez cette valeur pour ajuster la taille du cercle
                             },
                         },
                     },
@@ -123,7 +155,133 @@ export class AnalyticsComponent implements OnInit, OnDestroy
                                                      </div>`,
                     },
                 };
-            });
+            
+
+
+
+            //candidate acceptance  
+    
+                // Définir chartAge ici, après avoir récupéré les pourcentages
+                this.chartAge = {
+                    chart: {
+                        animations: {
+                            speed: 400,
+                            animateGradually: {
+                                enabled: false,
+                            },
+                        },
+                        fontFamily: 'inherit',
+                        foreColor: 'inherit',
+                        height: '100%',
+                        type: 'donut',
+                        sparkline: {
+                            enabled: true,
+                        },
+                    },
+                    
+                    colors: ['#319795', '#4FD1C5'],
+                    labels: ["Accepted candidate  percentage ", "Refused candidate percentage "],
+                    plotOptions: {
+                        pie: {
+                            customScale: 0.9,
+                            expandOnClick: false,
+                            donut: {
+                                size: '70%',
+                            },
+                        },
+                    },
+                   series: [this.Acceptance_Percentage,this.Refused_Percentage],
+                    states: {
+                        hover: {
+                            filter: {
+                                type: 'none',
+                            },
+                        },
+                        active: {
+                            filter: {
+                                type: 'none',
+                            },
+                        },
+                    },
+                    tooltip: {
+                        enabled: true,
+                        fillSeriesColor: false,
+                        theme: 'dark',
+                        custom: ({
+                            seriesIndex,
+                            w,
+                        }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
+                                                         <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
+                                                         <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
+                                                         <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
+                                                     </div>`,
+                    },
+                };
+
+
+
+// Language
+this.chartLanguage = {
+    chart      : {
+        animations: {
+            speed           : 400,
+            animateGradually: {
+                enabled: false,
+            },
+        },
+        fontFamily: 'inherit',
+        foreColor : 'inherit',
+        height    : '100%',
+        type      : 'donut',
+        sparkline : {
+            enabled: true,
+        },
+    },
+    colors     : ['#805AD5', '#B794F4'],
+    labels     :["Master Percentage","bachelor Percentage","other Percentage"],
+    plotOptions: {
+        pie: {
+            customScale  : 0.9,
+            expandOnClick: false,
+            donut        : {
+                size: '70%',
+            },
+        },
+    },
+    series     : [this.MasterPercentage,this.bachelorPercentage,this.otherPercentage],
+    states     : {
+        hover : {
+            filter: {
+                type: 'none',
+            },
+        },
+        active: {
+            filter: {
+                type: 'none',
+            },
+        },
+    },
+    tooltip    : {
+        enabled        : true,
+        fillSeriesColor: false,
+        theme          : 'dark',
+        custom         : ({
+            seriesIndex,
+            w,
+        }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
+                                            <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
+                                            <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
+                                            <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
+                                        </div>`,
+       },
+     };
+
+
+       
+});
+
+
+
 
         // Get the data
         this._analyticsService.data$
@@ -509,174 +667,14 @@ export class AnalyticsComponent implements OnInit, OnDestroy
             },
         };
 
-        // New vs. returning
-        this.chartNewVsReturning = {
-            chart      : {
-                animations: {
-                    speed           : 400,
-                    animateGradually: {
-                        enabled: false,
-                    },
-                },
-                fontFamily: 'inherit',
-                foreColor : 'inherit',
-                height    : '100%',
-                type      : 'donut',
-                sparkline : {
-                    enabled: true,
-                },
-            },
-            colors     : ['#3182CE', '#63B3ED'],
-            labels     : this.data.newVsReturning.labels,
-            plotOptions: {
-                pie: {
-                    customScale  : 0.9,
-                    expandOnClick: false,
-                    donut        : {
-                        size: '70%',
-                    },
-                },
-            },
-            series     : this.data.newVsReturning.series,
-            states     : {
-                hover : {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-                active: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-            },
-            tooltip    : {
-                enabled        : true,
-                fillSeriesColor: false,
-                theme          : 'dark',
-                custom         : ({
-                    seriesIndex,
-                    w,
-                }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
-                                                    <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-                                                    <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
-                                                    <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
-                                                </div>`,
-            },
-        };
+        
+//age
 
-      
 
-        // Age
-        this.chartAge = {
-            chart      : {
-                animations: {
-                    speed           : 400,
-                    animateGradually: {
-                        enabled: false,
-                    },
-                },
-                fontFamily: 'inherit',
-                foreColor : 'inherit',
-                height    : '100%',
-                type      : 'donut',
-                sparkline : {
-                    enabled: true,
-                },
-            },
-            colors     : ['#DD6B20', '#F6AD55'],
-            labels     : this.data.age.labels,
-            plotOptions: {
-                pie: {
-                    customScale  : 0.9,
-                    expandOnClick: false,
-                    donut        : {
-                        size: '70%',
-                    },
-                },
-            },
-            series     : this.data.age.series,
-            states     : {
-                hover : {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-                active: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-            },
-            tooltip    : {
-                enabled        : true,
-                fillSeriesColor: false,
-                theme          : 'dark',
-                custom         : ({
-                    seriesIndex,
-                    w,
-                }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
-                                                    <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-                                                    <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
-                                                    <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
-                                                </div>`,
-            },
-        };
 
-        // Language
-        this.chartLanguage = {
-            chart      : {
-                animations: {
-                    speed           : 400,
-                    animateGradually: {
-                        enabled: false,
-                    },
-                },
-                fontFamily: 'inherit',
-                foreColor : 'inherit',
-                height    : '100%',
-                type      : 'donut',
-                sparkline : {
-                    enabled: true,
-                },
-            },
-            colors     : ['#805AD5', '#B794F4'],
-            labels     : this.data.language.labels,
-            plotOptions: {
-                pie: {
-                    customScale  : 0.9,
-                    expandOnClick: false,
-                    donut        : {
-                        size: '70%',
-                    },
-                },
-            },
-            series     : this.data.language.series,
-            states     : {
-                hover : {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-                active: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-            },
-            tooltip    : {
-                enabled        : true,
-                fillSeriesColor: false,
-                theme          : 'dark',
-                custom         : ({
-                    seriesIndex,
-                    w,
-                }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
-                                                    <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-                                                    <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
-                                                    <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
-                                                </div>`,
-            },
-        };
+
+
+
+        
     }
 }

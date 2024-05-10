@@ -89,7 +89,7 @@ export class ContactsDetailsComponent implements OnInit
      * Constructor
      */
     constructor(
-   
+    
         private _snackBar: MatSnackBar,
         @Inject(MAT_DIALOG_DATA) public data: { candidat: any } ,
         private _changeDetectorRef: ChangeDetectorRef,
@@ -102,12 +102,13 @@ export class ContactsDetailsComponent implements OnInit
     {
         
     }
+    candidateID:string = this.data.candidat.id;
     candidat: any;
     candidatID=this.data.candidat;
 
     ngOnInit(): void {
         console.log("down we transfered intern");
-        console.log("id candidate", this.data.candidat.email);
+        console.log("id candidate", this.data.candidat.id);
      console.log("data",this.data);
   
      
@@ -146,21 +147,35 @@ export class ContactsDetailsComponent implements OnInit
 
 
           };
+          const UpdatCnadidateData = {
+    
+    
+          
+            status:true,
+                
+    
+    
+              };
       
           // Envoyer les données au serveur
           this.InternService.addIntern(this.CompanyId,this.userId, candidateData).subscribe(
             (response) => {
+
               this.type ='success'  
               console.log('intern  adedd avec succès :', response);
               console.log("candidateData",candidateData);
               
+
+
               if (this.type ='success')   {
                 this.openSnackBar(' new intern  added successfuy', 'Close');
                 this.matDialogRef.close();
 
-                this.isAccepted = true;
-                console.log(this.isAccepted);
-                
+                  this.CandidateService.updateCandidat(this.CompanyId,this.candidateID, UpdatCnadidateData).subscribe(
+            (response2) => {
+              console.log('update  status:', response2);
+              console.log("candidateData",UpdatCnadidateData);
+            })
                 
                }
               

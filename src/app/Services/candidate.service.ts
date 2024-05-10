@@ -51,8 +51,8 @@ export class CandidateService {
     return this.http.get<any>(`${this.apiUrl}/candidats/${Companyid}/${id}`, { headers: this.headers });
   }
 
-  updateCandidat(Companyid: string,id: string, candidat: CondidatIn): Observable<CondidatIn> {
-    return this.http.put<CondidatIn>(`${this.apiUrl}/candidats/${Companyid}/${id}`, candidat, { headers: this.headers });
+  updateCandidat(Companyid: string,id: string, candidat: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/candidats/${Companyid}/${id}`, candidat, { headers: this.headers });
   }
 
   deleteCandidat(Companyid: string,id: string): Observable<any> {
@@ -61,18 +61,19 @@ export class CandidateService {
 
 
 
+  getAcceptancePercentage
+  (Companyid: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/candidats/${Companyid}/Acceptance`,{ headers: this.headers });
+  }
+
+
+
+  getlevelPercentage
+  (Companyid: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/candidats/${Companyid}/Percentage`,{ headers: this.headers });
+  }
 
 
 
 
-
-
-
-
-
-
-
-
-
- 
 }
